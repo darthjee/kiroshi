@@ -10,7 +10,7 @@ Metrics/BlockLength:
     - 'spec/**/*_spec.rb'
     - 'spec/dummy/db/schema.rb'
     - 'spec/support/shared_*/**/*.rb'
-    - 'azeroth.gemspec'
+    - 'kiroshi.gemspec'
 
 RSpec/NestedGroups:
   Max: 5
