@@ -25,7 +25,6 @@ RSpec::Matchers.define_negated_matcher :not_change, :change
 RSpec::Matchers.define_negated_matcher :not_add_method, :add_method
 
 RSpec.configure do |config|
-  config.infer_spec_type_from_file_location!
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.filter_run_excluding :integration unless ENV['ALL']
