@@ -2,39 +2,21 @@ require: rubocop-rspec
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 3.3
+  NewCops: enable
 
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*_spec.rb'
-    - 'spec/support/**/*.rb'
-    - '*.gemspec'
+    - 'spec/dummy/db/schema.rb'
+    - 'spec/support/shared_*/**/*.rb'
+    - 'azeroth.gemspec'
 
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - 'spec/**/*_spec.rb'
+RSpec/NestedGroups:
+  Max: 5
 
 RSpec/AlignLeftLetBrace:
   Enabled: true
-
-RSpec/DescribedClass:
-  Exclude:
-    - 'spec/integration/yard/**/*_spec.rb'
-
-RSpec/ExampleLength:
-  Exclude:
-    - 'spec/integration/yard/**/*_spec.rb'
-    - 'spec/integration/readme/**/*_spec.rb'
-
-RSpec/MultipleExpectations:
-  Exclude:
-    - 'spec/integration/yard/**/*_spec.rb'
-    - 'spec/integration/readme/**/*_spec.rb'
-
-RSpec/NestedGroups:
-  Max: 4
-  Exclude:
-    - 'spec/integration/yard/**/*.rb'
 
 Style/HashEachMethods:
   Enabled: true
@@ -44,3 +26,26 @@ Style/HashTransformKeys:
 
 Style/HashTransformValues:
   Enabled: true
+
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/integration/readme/**/*_spec.rb'
+    - 'spec/integration/yard/**/*_spec.rb'
+
+RSpec/MultipleExpectations:
+  Exclude:
+    - 'spec/integration/readme/**/*_spec.rb'
+    - 'spec/integration/yard/**/*_spec.rb'
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+Gemspec/RequireMFA:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
+Lint/EmptyClass:
+  Enabled: false
