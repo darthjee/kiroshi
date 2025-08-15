@@ -22,26 +22,20 @@ workflows:
 jobs:
   test:
     docker:
-      - image: darthjee/circleci_rails_gems:1.1.0
+      - image: darthjee/circleci_rails_gems:2.0.0
         environment:
           PROJECT: kiroshi
     steps:
       - checkout
-      - run:
-          name: Prepare Coverage Test Report
-          command: cc-test-reporter before-build
       - run:
           name: Bundle Install
           command: bundle install
       - run:
           name: RSpec
           command: bundle exec rspec
-      - run:
-          name: Coverage Test Report
-          command: cc-test-reporter after-build --exit-code $?
   checks:
     docker:
-      - image: darthjee/circleci_rails_gems:1.1.0
+      - image: darthjee/circleci_rails_gems:2.0.0
         environment:
           PROJECT: kiroshi
     steps:
@@ -66,7 +60,7 @@ jobs:
           command: check_specs
   build-and-release:
     docker:
-      - image: darthjee/circleci_rails_gems:1.1.0
+      - image: darthjee/circleci_rails_gems:2.0.0
         environment:
           PROJECT: kiroshi
     steps:
