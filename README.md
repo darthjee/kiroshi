@@ -1,11 +1,7 @@
 Kiroshi
 ====
-[![Code Climate](https://codeclimate.com/github/darthjee/kiroshi/badges/gpa.svg)](https://codeclimate.com/github/darthjee/kiroshi)
-[![Test Coverage](https://codeclimate.com/github/darthjee/kiroshi/badges/coverage.svg)](https://codeclimate.com/github/darthjee/kiroshi/coverage)
-[![Issue Count](https://codeclimate.com/github/darthjee/kiroshi/badges/issue_count.svg)](https://codeclimate.com/github/darthjee/kiroshi)
-[![Gem Version](https://badge.fury.io/rb/kiroshi.svg)](https://badge.fury.io/rb/kiroshi)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9836de08612e46b889c7978be2b72a14)](https://www.codacy.com/manual/darthjee/kiroshi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=darthjee/kiroshi&amp;utm_campaign=Badge_Grade)
-[![Inline docs](http://inch-ci.org/github/darthjee/kiroshi.svg?branch=master)](http://inch-ci.org/github/darthjee/kiroshi)
+[![Build Status](https://circleci.com/gh/darthjee/kiroshi.svg?style=shield)](https://circleci.com/gh/darthjee/kiroshi)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/35480a5e82e74ff7a0186697b3f61a4b)](https://app.codacy.com/gh/darthjee/kiroshi/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ![kiroshi](https://raw.githubusercontent.com/darthjee/kiroshi/master/kiroshi.jpg)
 
