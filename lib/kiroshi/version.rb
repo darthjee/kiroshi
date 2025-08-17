@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Kiroshi
+module Kiroshi
   VERSION = '0.0.1'
 end
