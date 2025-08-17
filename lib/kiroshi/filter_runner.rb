@@ -66,24 +66,6 @@ module Kiroshi
       filters[filter.attribute]
     end
 
-    # Returns the table name from the scope
-    #
-    # @return [String] the table name
-    #
-    # @since 0.1.1
-    def table_name
-      scope.table_name
-    end
-
-    # Returns the attribute name to filter by
-    #
-    # @return [Symbol] the attribute name
-    #
-    # @since 0.1.1
-    def attribute
-      filter.attribute
-    end
-
     # Returns the current scope being filtered
     #
     # @return [ActiveRecord::Relation] the scope
@@ -95,6 +77,7 @@ module Kiroshi
 
     attr_reader :filter, :filters
 
+    delegate :attribute, to: :filter
     delegate :table_name, to: :scope
   end
 end
