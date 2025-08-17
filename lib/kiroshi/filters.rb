@@ -71,8 +71,7 @@ module Kiroshi
       #
       # @since 0.1.0
       def filter_by(attribute, **)
-        @filter_configs ||= []
-        @filter_configs << Filter.new(attribute, **)
+        filter_configs << Filter.new(attribute, **)
       end
 
       # Returns the list of configured filters for this class
@@ -91,7 +90,7 @@ module Kiroshi
       #
       # @since 0.1.0
       def filter_configs
-        @filter_configs || []
+        @filter_configs ||= []
       end
     end
 
