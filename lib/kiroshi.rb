@@ -2,6 +2,8 @@
 
 # @api public
 # @author darthjee
-class Kiroshi
+module Kiroshi
   autoload :VERSION, 'kiroshi/version'
+  autoload :Filters, 'kiroshi/filters'
+  autoload :Filter,  'kiroshi/filter'
 end

@@ -6,6 +6,7 @@ gemspec
 
 gem 'actionpack',                '7.2.2.1'
 gem 'activerecord',              '7.2.2.1'
+gem 'activesupport',             '7.2.2.1'
 gem 'bundler',                   '~> 2.3'
 gem 'factory_bot',               '6.2.1'
 gem 'minitest',                  '5.25.4'
