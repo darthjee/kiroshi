@@ -82,6 +82,8 @@ module Kiroshi
 
     attr_reader :filter_runner
 
+    delegate :scope, :attribute, :table_name, :filter_value, to: :filter_runner
+
     # @author darthjee
     #
     # Query strategy for exact matching
@@ -110,7 +112,7 @@ module Kiroshi
       #
       # @since 0.1.1
       def apply
-        filter_runner.scope.where(filter_runner.attribute => filter_runner.filter_value)
+        scope.where(attribute => filter_value)
       end
     end
 
@@ -143,9 +145,9 @@ module Kiroshi
       #
       # @since 0.1.1
       def apply
-        filter_runner.scope.where(
-          "#{filter_runner.table_name}.#{filter_runner.attribute} LIKE ?",
-          "%#{filter_runner.filter_value}%"
+        scope.where(
+          "#{table_name}.#{attribute} LIKE ?",
+          "%#{filter_value}%"
         )
       end
     end
