@@ -10,6 +10,7 @@ SimpleCov.start 'gem'
 
 require 'kiroshi'
 require 'pry-nav'
+require 'active_support/all'
 require 'factory_bot'
 
 require 'active_record'
