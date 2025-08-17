@@ -83,11 +83,17 @@ module Kiroshi
     # @!method attribute
     #   @api private
     #   @private
+    #
+    #   Returns the attribute name to filter by
+    #
     #   @return [Symbol] the attribute name to filter by
 
     # @!method match
     #   @api private
     #   @private
+    #
+    #   Returns the matching type (+:exact+ or +:like+)
+    #
     #   @return [Symbol] the matching type (+:exact+ or +:like+)
   end
 end

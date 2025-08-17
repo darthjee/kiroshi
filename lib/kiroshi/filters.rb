@@ -170,6 +170,8 @@ module Kiroshi
     #   @api private
     #   @private
     #
+    #   Returns the hash of filter values to be applied
+    #
     #   @return [Hash] the hash of filter values to be applied
   end
 end
