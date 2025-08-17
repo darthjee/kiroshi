@@ -5,8 +5,10 @@ Kiroshi
 
 ![kiroshi](https://raw.githubusercontent.com/darthjee/kiroshi/readme/kiroshi.jpg)
 
+
 Yard Documentation
 -------------------
+
 [https://www.rubydoc.info/gems/kiroshi/0.0.1](https://www.rubydoc.info/gems/kiroshi/0.0.1)
 
 Kiroshi has been designed to make filtering ActiveRecord queries easier
@@ -84,6 +86,7 @@ filtered_users = filters.apply(User.all)
 ## Advanced Examples
 
 ### Multiple Filter Types
+
 ```ruby
 class ProductFilters < Kiroshi::Filters
   filter_by :name, match: :like
@@ -99,6 +102,7 @@ products = filters.apply(Product.all)
 ```
 
 ### Controller Integration
+
 ```ruby
 class DocumentsController < ApplicationController
   def index
@@ -126,6 +130,7 @@ end
 ```
 
 ### Nested Resource Filtering
+
 ```ruby
 class ArticleFilters < Kiroshi::Filters
   filter_by :title, match: :like
