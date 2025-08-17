@@ -89,9 +89,7 @@ module Kiroshi
     # @return [ActiveRecord::Relation] the scope
     #
     # @since 0.1.1
-    def scope
-      @scope
-    end
+    attr_reader :scope
 
     private
 

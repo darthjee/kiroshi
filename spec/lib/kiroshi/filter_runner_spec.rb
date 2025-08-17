@@ -25,8 +25,8 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
     end
 
     context 'when filter match is :like' do
-      let(:filter) { Kiroshi::Filter.new(:name, match: :like) }
-      let(:filter_value) { 'test' }
+      let(:filter)                 { Kiroshi::Filter.new(:name, match: :like) }
+      let(:filter_value)           { 'test' }
       let!(:matching_document)     { create(:document, name: 'test_document') }
       let!(:non_matching_document) { create(:document, name: 'other_value') }
 
@@ -57,7 +57,7 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
     end
 
     context 'when filter value is not present' do
-      let(:filter) { Kiroshi::Filter.new(:name) }
+      let(:filter)  { Kiroshi::Filter.new(:name) }
       let(:filters) { { name: nil } }
 
       it 'returns the original scope unchanged' do
@@ -94,7 +94,7 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
 
     context 'with multiple attributes' do
       let(:filter) { Kiroshi::Filter.new(:status, match: :exact) }
-      let(:filters) { { name: 'test_name', status: 'finished' } }
+      let(:filters)                { { name: 'test_name', status: 'finished' } }
       let!(:matching_document)     { create(:document, name: 'test_name', status: 'finished') }
       let!(:non_matching_document) { create(:document, name: 'other_name', status: 'processing') }
 
