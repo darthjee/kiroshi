@@ -6,9 +6,9 @@ RSpec.describe Kiroshi::Filters, type: :model do
   describe '#apply' do
     subject(:filter_instance) { filters_class.new(filters) }
 
-    let(:scope) { Document.all }
-    let(:filters) { {} }
-    let!(:document) { create(:document, name: 'test_name', status: 'finished') }
+    let(:scope)           { Document.all }
+    let(:filters)         { {} }
+    let!(:document)       { create(:document, name: 'test_name', status: 'finished') }
     let!(:other_document) { create(:document, name: 'other_name', status: 'processing') }
 
     let(:filters_class) { Class.new(described_class) }

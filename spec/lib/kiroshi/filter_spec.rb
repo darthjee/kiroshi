@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Kiroshi::Filter, type: :model do
   describe '#apply' do
-    let(:scope) { Document.all }
-    let(:filter_value) { 'test_value' }
-    let(:filters) { { name: filter_value } }
-    let!(:matching_document) { create(:document, name: filter_value) }
+    let(:scope)                  { Document.all }
+    let(:filter_value)           { 'test_value' }
+    let(:filters)                { { name: filter_value } }
+    let!(:matching_document)     { create(:document, name: filter_value) }
     let!(:non_matching_document) { create(:document, name: 'other_value') }
 
     context 'when match is :exact' do
@@ -26,7 +26,7 @@ RSpec.describe Kiroshi::Filter, type: :model do
       subject(:filter) { described_class.new(:name, match: :like) }
 
       let(:filter_value) { 'test' }
-      let!(:matching_document) { create(:document, name: 'test_document') }
+      let!(:matching_document)     { create(:document, name: 'test_document') }
       let!(:non_matching_document) { create(:document, name: 'other_value') }
 
       it 'returns partial matches' do
