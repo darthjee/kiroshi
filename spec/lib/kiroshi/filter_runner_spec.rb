@@ -98,10 +98,12 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
       let!(:matching_document)     { create(:document, name: 'test_name', status: 'finished') }
       let!(:non_matching_document) { create(:document, name: 'other_name', status: 'processing') }
 
-      it 'filters by the configured attribute only' do
-        result = runner.apply
-        expect(result).to include(matching_document)
-        expect(result).not_to include(non_matching_document)
+      it 'filters by the configured attribute only returning the matched' do
+        expect(runner.apply).to include(matching_document)
+      end
+
+      it 'does not return non-matching records' do
+        expect(runner.apply).not_to include(non_matching_document)
       end
     end
   end
