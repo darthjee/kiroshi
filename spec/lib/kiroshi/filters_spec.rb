@@ -6,10 +6,10 @@ RSpec.describe Kiroshi::Filters, type: :model do
   describe '#apply' do
     subject(:filter_instance) { filters_class.new(filters) }
 
-    let(:scope) { Simulation.all }
+    let(:scope) { Document.all }
     let(:filters) { {} }
-    let!(:simulation) { create(:simulation, name: 'test_name', status: 'finished') }
-    let!(:other_simulation) { create(:simulation, name: 'other_name', status: 'processing') }
+    let!(:document) { create(:document, name: 'test_name', status: 'finished') }
+    let!(:other_document) { create(:document, name: 'other_name', status: 'processing') }
 
     let(:filters_class) { Class.new(described_class) }
 
@@ -36,12 +36,12 @@ RSpec.describe Kiroshi::Filters, type: :model do
         filters_class.filter_by :name
       end
 
-      it 'returns simulations matching the exact filter' do
-        expect(filter_instance.apply(scope)).to include(simulation)
+      it 'returns documents matching the exact filter' do
+        expect(filter_instance.apply(scope)).to include(document)
       end
 
-      it 'does not return simulations not matching the exact filter' do
-        expect(filter_instance.apply(scope)).not_to include(other_simulation)
+      it 'does not return documents not matching the exact filter' do
+        expect(filter_instance.apply(scope)).not_to include(other_document)
       end
     end
 
@@ -52,12 +52,12 @@ RSpec.describe Kiroshi::Filters, type: :model do
         filters_class.filter_by :name, match: :like
       end
 
-      it 'returns simulations matching the like filter' do
-        expect(filter_instance.apply(scope)).to include(simulation)
+      it 'returns documents matching the like filter' do
+        expect(filter_instance.apply(scope)).to include(document)
       end
 
-      it 'does not return simulations not matching the like filter' do
-        expect(filter_instance.apply(scope)).not_to include(other_simulation)
+      it 'does not return documents not matching the like filter' do
+        expect(filter_instance.apply(scope)).not_to include(other_document)
       end
     end
 
@@ -69,12 +69,12 @@ RSpec.describe Kiroshi::Filters, type: :model do
         filters_class.filter_by :status
       end
 
-      it 'returns simulations matching all filters' do
-        expect(filter_instance.apply(scope)).to include(simulation)
+      it 'returns documents matching all filters' do
+        expect(filter_instance.apply(scope)).to include(document)
       end
 
-      it 'does not return simulations not matching all filters' do
-        expect(filter_instance.apply(scope)).not_to include(other_simulation)
+      it 'does not return documents not matching all filters' do
+        expect(filter_instance.apply(scope)).not_to include(other_document)
       end
     end
 
