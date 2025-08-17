@@ -40,13 +40,13 @@ Installation
 Usage
 -----
 
-## Kiroshi::Filters
+# Kiroshi::Filters
 
 [Filters](https://www.rubydoc.info/gems/kiroshi/Kiroshi/Filters)
 is a base class for implementing filter sets on ActiveRecord scopes.
 It uses a class-level DSL to define filters and an instance-level interface to apply them.
 
-### Basic Usage
+## Basic Usage
 
 ```ruby
 # Define a filter class
@@ -62,7 +62,7 @@ filtered_documents = filters.apply(Document.all)
 # Generates: WHERE name LIKE '%report%' AND status = 'published'
 ```
 
-### Filter Types
+## Filter Types
 
 Kiroshi supports two types of matching:
 
@@ -81,9 +81,9 @@ filtered_users = filters.apply(User.all)
 # Generates: WHERE email LIKE '%admin%' AND role = 'moderator'
 ```
 
-### Advanced Examples
+## Advanced Examples
 
-#### Multiple Filter Types
+### Multiple Filter Types
 ```ruby
 class ProductFilters < Kiroshi::Filters
   filter_by :name, match: :like
@@ -98,7 +98,7 @@ products = filters.apply(Product.all)
 # Only name and category filters are applied, price and brand are ignored
 ```
 
-#### Controller Integration
+### Controller Integration
 ```ruby
 class DocumentsController < ApplicationController
   def index
@@ -125,7 +125,7 @@ class DocumentFilters < Kiroshi::Filters
 end
 ```
 
-#### Nested Resource Filtering
+### Nested Resource Filtering
 ```ruby
 class ArticleFilters < Kiroshi::Filters
   filter_by :title, match: :like
@@ -144,13 +144,13 @@ def article_filters
 end
 ```
 
-## Kiroshi::Filter
+# Kiroshi::Filter
 
 [Filter](https://www.rubydoc.info/gems/kiroshi/Kiroshi/Filter)
 is the individual filter class that applies filtering logic to ActiveRecord scopes.
 It's automatically used by `Kiroshi::Filters`, but can also be used standalone.
 
-### Standalone Usage
+## Standalone Usage
 
 ```ruby
 # Create individual filters
@@ -163,7 +163,7 @@ scope = name_filter.apply(scope, { name: 'report' })
 scope = status_filter.apply(scope, { status: 'published' })
 ```
 
-### Filter Options
+## Filter Options
 
 - `match: :exact` - Performs exact matching (default)
 - `match: :like` - Performs partial matching using SQL LIKE
@@ -180,7 +180,7 @@ like_filter.apply(Document.all, { title: 'Ruby' })
 # Generates: WHERE title LIKE '%Ruby%'
 ```
 
-### Empty Value Handling
+## Empty Value Handling
 
 Filters automatically ignore empty or nil values:
 
