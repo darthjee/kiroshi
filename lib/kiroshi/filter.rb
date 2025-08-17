@@ -18,11 +18,11 @@ module Kiroshi
   #
   # @since 0.1.0
   class Filter
-    attr_reader :attribute
+    attr_reader :attribute, :match
+
     # @!method attribute
     #   @return [Symbol] the attribute name to filter by
 
-    attr_reader :match
     # @!method match
     #   @return [Symbol] the matching type (+:exact+ or +:like+)
 
