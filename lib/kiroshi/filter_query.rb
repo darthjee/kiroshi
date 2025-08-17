@@ -1,0 +1,146 @@
+# frozen_string_literal: true
+
+module Kiroshi
+  # @author darthjee
+  #
+  # Factory class for creating filter query strategies
+  #
+  # This class implements the Strategy pattern for handling different types of
+  # database queries based on the filter match type. It provides a factory method
+  # to create the appropriate query strategy class.
+  #
+  # @example Getting an exact match query strategy
+  #   query = Kiroshi::FilterQuery.for(:exact)
+  #   query.apply(filter_runner)
+  #
+  # @example Getting a LIKE match query strategy
+  #   query = Kiroshi::FilterQuery.for(:like)
+  #   query.apply(filter_runner)
+  #
+  # @since 0.1.1
+  class FilterQuery
+    class << self
+      # Factory method to create the appropriate query strategy
+      #
+      # This method returns the correct query strategy class based on the
+      # match type provided. It serves as the main entry point for creating
+      # query strategies.
+      #
+      # @param match [Symbol] the type of matching to perform
+      #   - :exact for exact matching
+      #   - :like for partial matching using SQL LIKE
+      #
+      # @return [Class] the appropriate FilterQuery subclass
+      #
+      # @example Creating an exact match query
+      #   query_class = Kiroshi::FilterQuery.for(:exact)
+      #   # Returns Kiroshi::FilterQuery::Exact
+      #
+      # @example Creating a LIKE match query
+      #   query_class = Kiroshi::FilterQuery.for(:like)
+      #   # Returns Kiroshi::FilterQuery::Like
+      #
+      # @raise [ArgumentError] when an unsupported match type is provided
+      #
+      # @since 0.1.1
+      def for(match)
+        case match
+        when :exact
+          Exact
+        when :like
+          Like
+        else
+          raise ArgumentError, "Unsupported match type: #{match}"
+        end
+      end
+    end
+
+    # Base implementation for applying a filter query
+    #
+    # This method should be overridden by subclasses to provide specific
+    # query logic for each match type.
+    #
+    # @param filter_runner [Kiroshi::FilterRunner] the filter runner instance
+    #
+    # @return [ActiveRecord::Relation] the filtered scope
+    #
+    # @raise [NotImplementedError] when called on the base class
+    #
+    # @since 0.1.1
+    def apply(filter_runner)
+      raise NotImplementedError, 'Subclasses must implement #apply method'
+    end
+
+    # @author darthjee
+    #
+    # Query strategy for exact matching
+    #
+    # This class implements the exact match query strategy, generating
+    # WHERE clauses with exact equality comparisons.
+    #
+    # @example Applying exact match query
+    #   query = Kiroshi::FilterQuery::Exact.new
+    #   query.apply(filter_runner)
+    #   # Generates: WHERE attribute = 'value'
+    #
+    # @since 0.1.1
+    class Exact < FilterQuery
+      # Applies exact match filtering to the scope
+      #
+      # This method generates a WHERE clause with exact equality matching
+      # for the filter's attribute and value.
+      #
+      # @param filter_runner [Kiroshi::FilterRunner] the filter runner instance
+      #
+      # @return [ActiveRecord::Relation] the filtered scope with exact match
+      #
+      # @example Applying exact match
+      #   query = Exact.new
+      #   query.apply(filter_runner)
+      #   # Generates: WHERE status = 'published'
+      #
+      # @since 0.1.1
+      def apply(filter_runner)
+        filter_runner.scope.where(filter_runner.attribute => filter_runner.filter_value)
+      end
+    end
+
+    # @author darthjee
+    #
+    # Query strategy for LIKE matching
+    #
+    # This class implements the LIKE match query strategy, generating
+    # WHERE clauses with SQL LIKE operations for partial matching.
+    #
+    # @example Applying LIKE match query
+    #   query = Kiroshi::FilterQuery::Like.new
+    #   query.apply(filter_runner)
+    #   # Generates: WHERE table_name.attribute LIKE '%value%'
+    #
+    # @since 0.1.1
+    class Like < FilterQuery
+      # Applies LIKE match filtering to the scope
+      #
+      # This method generates a WHERE clause with SQL LIKE operation
+      # for partial matching, including table name prefix to avoid
+      # column ambiguity in complex queries.
+      #
+      # @param filter_runner [Kiroshi::FilterRunner] the filter runner instance
+      #
+      # @return [ActiveRecord::Relation] the filtered scope with LIKE match
+      #
+      # @example Applying LIKE match
+      #   query = Like.new
+      #   query.apply(filter_runner)
+      #   # Generates: WHERE documents.name LIKE '%ruby%'
+      #
+      # @since 0.1.1
+      def apply(filter_runner)
+        filter_runner.scope.where(
+          "#{filter_runner.table_name}.#{filter_runner.attribute} LIKE ?",
+          "%#{filter_runner.filter_value}%"
+        )
+      end
+    end
+  end
+end

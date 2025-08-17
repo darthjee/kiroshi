@@ -51,38 +51,51 @@ module Kiroshi
     #
     # @since 0.1.1
     def apply
-      filter_value = filters[filter.attribute]
       return scope unless filter_value.present?
 
-      case filter.match
-      when :like
-        scope.where("#{table_name}.#{filter.attribute} LIKE ?", "%#{filter_value}%")
-      else # :exact (default)
-        scope.where(filter.attribute => filter_value)
-      end
+      query_strategy = FilterQuery.for(filter.match).new
+      query_strategy.apply(self)
+    end
+
+    # Returns the filter value for the current filter's attribute
+    #
+    # @return [Object, nil] the filter value or nil if not present
+    #
+    # @since 0.1.1
+    def filter_value
+      filters[filter.attribute]
+    end
+
+    # Returns the table name from the scope
+    #
+    # @return [String] the table name
+    #
+    # @since 0.1.1
+    def table_name
+      scope.table_name
+    end
+
+    # Returns the attribute name to filter by
+    #
+    # @return [Symbol] the attribute name
+    #
+    # @since 0.1.1
+    def attribute
+      filter.attribute
+    end
+
+    # Returns the current scope being filtered
+    #
+    # @return [ActiveRecord::Relation] the scope
+    #
+    # @since 0.1.1
+    def scope
+      @scope
     end
 
     private
 
-    attr_reader :filter, :scope, :filters
-
-    delegate :attribute, :match, to: :filter
-
-    # @!method attribute
-    #   @api private
-    #   @private
-    #
-    #   Returns the attribute name to filter by
-    #
-    #   @return [Symbol] the attribute name to filter by
-
-    # @!method match
-    #   @api private
-    #   @private
-    #
-    #   Returns the matching type (+:exact+ or +:like+)
-    #
-    #   @return [Symbol] the matching type (+:exact+ or +:like+)
+    attr_reader :filter, :filters
 
     delegate :table_name, to: :scope
   end

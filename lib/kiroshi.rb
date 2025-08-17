@@ -8,4 +8,5 @@ module Kiroshi
   autoload :Filters,      'kiroshi/filters'
   autoload :Filter,       'kiroshi/filter'
   autoload :FilterRunner, 'kiroshi/filter_runner'
+  autoload :FilterQuery,  'kiroshi/filter_query'
 end
