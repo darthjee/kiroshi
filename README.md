@@ -1,13 +1,11 @@
-Kiroshi
-====
+# Kiroshi
 [![Build Status](https://circleci.com/gh/darthjee/kiroshi.svg?style=shield)](https://circleci.com/gh/darthjee/kiroshi)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/35480a5e82e74ff7a0186697b3f61a4b)](https://app.codacy.com/gh/darthjee/kiroshi/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ![kiroshi](https://raw.githubusercontent.com/darthjee/kiroshi/readme/kiroshi.jpg)
 
 
-Yard Documentation
--------------------
+## Yard Documentation
 
 [https://www.rubydoc.info/gems/kiroshi/0.0.1](https://www.rubydoc.info/gems/kiroshi/0.0.1)
 
@@ -20,8 +18,7 @@ Current Release: [0.0.1](https://github.com/darthjee/kiroshi/tree/0.0.1)
 
 [Next release](https://github.com/darthjee/kiroshi/compare/0.0.1...master)
 
-Installation
----------------
+## Installation
 
 - Install it
 
@@ -42,13 +39,13 @@ Installation
 Usage
 -----
 
-# Kiroshi::Filters
+### Kiroshi::Filters
 
 [Filters](https://www.rubydoc.info/gems/kiroshi/Kiroshi/Filters)
 is a base class for implementing filter sets on ActiveRecord scopes.
 It uses a class-level DSL to define filters and an instance-level interface to apply them.
 
-## Basic Usage
+#### Basic Usage
 
 ```ruby
 # Define a filter class
@@ -64,7 +61,7 @@ filtered_documents = filters.apply(Document.all)
 # Generates: WHERE name LIKE '%report%' AND status = 'published'
 ```
 
-## Filter Types
+#### Filter Types
 
 Kiroshi supports two types of matching:
 
@@ -83,9 +80,9 @@ filtered_users = filters.apply(User.all)
 # Generates: WHERE email LIKE '%admin%' AND role = 'moderator'
 ```
 
-## Advanced Examples
+#### Advanced Examples
 
-### Multiple Filter Types
+##### Multiple Filter Types
 
 ```ruby
 class ProductFilters < Kiroshi::Filters
@@ -101,7 +98,7 @@ products = filters.apply(Product.all)
 # Only name and category filters are applied, price and brand are ignored
 ```
 
-### Controller Integration
+##### Controller Integration
 
 ```ruby
 class DocumentsController < ApplicationController
@@ -129,7 +126,7 @@ class DocumentFilters < Kiroshi::Filters
 end
 ```
 
-### Nested Resource Filtering
+##### Nested Resource Filtering
 
 ```ruby
 class ArticleFilters < Kiroshi::Filters
@@ -149,13 +146,13 @@ def article_filters
 end
 ```
 
-# Kiroshi::Filter
+### Kiroshi::Filter
 
 [Filter](https://www.rubydoc.info/gems/kiroshi/Kiroshi/Filter)
 is the individual filter class that applies filtering logic to ActiveRecord scopes.
 It's automatically used by `Kiroshi::Filters`, but can also be used standalone.
 
-## Standalone Usage
+#### Standalone Usage
 
 ```ruby
 # Create individual filters
@@ -168,7 +165,7 @@ scope = name_filter.apply(scope, { name: 'report' })
 scope = status_filter.apply(scope, { status: 'published' })
 ```
 
-## Filter Options
+#### Filter Options
 
 - `match: :exact` - Performs exact matching (default)
 - `match: :like` - Performs partial matching using SQL LIKE
@@ -185,7 +182,7 @@ like_filter.apply(Document.all, { title: 'Ruby' })
 # Generates: WHERE title LIKE '%Ruby%'
 ```
 
-## Empty Value Handling
+#### Empty Value Handling
 
 Filters automatically ignore empty or nil values:
 
