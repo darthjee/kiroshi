@@ -53,8 +53,8 @@ module Kiroshi
     def apply
       return scope unless filter_value.present?
 
-      query_strategy = FilterQuery.for(filter.match).new
-      query_strategy.apply(self)
+      query_strategy = FilterQuery.for(filter.match).new(self)
+      query_strategy.apply
     end
 
     # Returns the filter value for the current filter's attribute
