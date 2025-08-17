@@ -9,6 +9,10 @@ Yard Documentation
 -------------------
 [https://www.rubydoc.info/gems/kiroshi/0.0.1](https://www.rubydoc.info/gems/kiroshi/0.0.1)
 
+Current Release: [0.0.1](https://github.com/darthjee/kiroshi/tree/0.0.1)
+
+[Next release](https://github.com/darthjee/kiroshi/compare/0.0.1...master)
+
 Installation
 ---------------
 
