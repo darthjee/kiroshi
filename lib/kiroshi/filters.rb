@@ -48,7 +48,7 @@ module Kiroshi
       #   - +:exact+ for exact matching (default)
       #   - +:like+ for partial matching using SQL LIKE
       #
-      # @return [Array<Filter>] the current list of configured filters
+      # @return [Filter] the new filter instance
       #
       # @example Defining exact match filters
       #   class ProductFilters < Kiroshi::Filters
@@ -71,7 +71,9 @@ module Kiroshi
       #
       # @since 0.1.0
       def filter_by(attribute, **)
-        filter_configs << Filter.new(attribute, **)
+        Filter.new(attribute, **).tap do |filter|
+          filter_configs << filter
+        end
       end
 
       # Returns the list of configured filters for this class
