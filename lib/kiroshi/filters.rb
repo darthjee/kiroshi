@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Kiroshi
+  # @api public
   # Base class for implementing filter sets on ActiveRecord scopes
   #
   # This class provides a foundation for creating reusable filter collections
