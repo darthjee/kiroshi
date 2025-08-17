@@ -167,6 +167,9 @@ module Kiroshi
     attr_reader :filters
 
     # @!method filters
+    #   @api private
+    #   @private
+    #
     #   @return [Hash] the hash of filter values to be applied
   end
 end
