@@ -36,8 +36,7 @@ Current Release: [0.0.1](https://github.com/darthjee/kiroshi/tree/0.0.1)
   bundle install kiroshi
 ```
 
-Usage
------
+## Usage
 
 ### Kiroshi::Filters
 
