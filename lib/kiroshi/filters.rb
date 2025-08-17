@@ -96,11 +96,6 @@ module Kiroshi
       end
     end
 
-    attr_reader :filters
-
-    # @!method filters
-    #   @return [Hash] the hash of filter values to be applied
-
     # Creates a new Filters instance
     #
     # @param filters [Hash] a hash containing the filter values to be applied.
@@ -165,5 +160,12 @@ module Kiroshi
 
       scope
     end
+
+    private
+
+    attr_reader :filters
+
+    # @!method filters
+    #   @return [Hash] the hash of filter values to be applied
   end
 end
