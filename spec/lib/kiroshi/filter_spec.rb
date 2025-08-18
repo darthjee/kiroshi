@@ -6,7 +6,6 @@ RSpec.describe Kiroshi::Filter, type: :model do
   describe '#apply' do
     let(:scope)                  { Document.all }
     let(:filter_value)           { 'test_value' }
-    let(:filters)                { { name: filter_value } }
     let!(:matching_document)     { create(:document, name: filter_value) }
     let!(:non_matching_document) { create(:document, name: 'other_value') }
 
@@ -14,11 +13,11 @@ RSpec.describe Kiroshi::Filter, type: :model do
       subject(:filter) { described_class.new(:name, match: :exact) }
 
       it 'returns documents matching the filter' do
-        expect(filter.apply(scope: scope, filters: filters)).to include(matching_document)
+        expect(filter.apply(scope: scope, value: filter_value)).to include(matching_document)
       end
 
       it 'does not return documents not matching the filter' do
-        expect(filter.apply(scope: scope, filters: filters)).not_to include(non_matching_document)
+        expect(filter.apply(scope: scope, value: filter_value)).not_to include(non_matching_document)
       end
     end
 
@@ -30,11 +29,11 @@ RSpec.describe Kiroshi::Filter, type: :model do
       let!(:non_matching_document) { create(:document, name: 'other_value') }
 
       it 'returns partial matches' do
-        expect(filter.apply(scope: scope, filters: filters)).to include(matching_document)
+        expect(filter.apply(scope: scope, value: filter_value)).to include(matching_document)
       end
 
       it 'does not return non-matching records' do
-        expect(filter.apply(scope: scope, filters: filters)).not_to include(non_matching_document)
+        expect(filter.apply(scope: scope, value: filter_value)).not_to include(non_matching_document)
       end
     end
 
@@ -42,21 +41,19 @@ RSpec.describe Kiroshi::Filter, type: :model do
       subject(:filter) { described_class.new(:name) }
 
       it 'defaults to exact match returning only exact matches' do
-        expect(filter.apply(scope: scope, filters: filters)).to include(matching_document)
+        expect(filter.apply(scope: scope, value: filter_value)).to include(matching_document)
       end
 
       it 'defaults to exact match returning not returning when filtering by a non-matching value' do
-        expect(filter.apply(scope: scope, filters: filters)).not_to include(non_matching_document)
+        expect(filter.apply(scope: scope, value: filter_value)).not_to include(non_matching_document)
       end
     end
 
     context 'when filter value is not present' do
       subject(:filter) { described_class.new(:name) }
 
-      let(:filters) { { name: nil } }
-
       it 'returns the original scope unchanged' do
-        expect(filter.apply(scope: scope, filters: filters)).to eq(scope)
+        expect(filter.apply(scope: scope, value: nil)).to eq(scope)
       end
     end
   end
