@@ -217,8 +217,8 @@ status_filter = Kiroshi::Filter.new(:status, match: :exact)
 
 # Apply filters manually
 scope = Document.all
-scope = name_filter.apply(scope, { name: 'report' })
-scope = status_filter.apply(scope, { status: 'published' })
+scope = name_filter.apply(scope: scope, value: 'report')
+scope = status_filter.apply(scope: scope, value: 'published')
 ```
 
 #### Filter Options
@@ -230,22 +230,22 @@ scope = status_filter.apply(scope, { status: 'published' })
 ```ruby
 # Exact match filter
 exact_filter = Kiroshi::Filter.new(:status)
-exact_filter.apply(Document.all, { status: 'published' })
+exact_filter.apply(scope: Document.all, value: 'published')
 # Generates: WHERE status = 'published'
 
 # LIKE match filter
 like_filter = Kiroshi::Filter.new(:title, match: :like)
-like_filter.apply(Document.all, { title: 'Ruby' })
+like_filter.apply(scope: Document.all, value: 'Ruby')
 # Generates: WHERE title LIKE '%Ruby%'
 
 # Table-qualified filter for joined queries
 tag_filter = Kiroshi::Filter.new(:name, match: :like, table: :tags)
-tag_filter.apply(Document.joins(:tags), { name: 'programming' })
+tag_filter.apply(scope: Document.joins(:tags), value: 'programming')
 # Generates: WHERE tags.name LIKE '%programming%'
 
 # Document-specific filter in joined query
 doc_filter = Kiroshi::Filter.new(:title, match: :exact, table: :documents)
-doc_filter.apply(Document.joins(:tags), { title: 'Ruby Guide' })
+doc_filter.apply(scope: Document.joins(:tags), value: 'Ruby Guide')
 # Generates: WHERE documents.title = 'Ruby Guide'
 ```
 
@@ -255,10 +255,9 @@ Filters automatically ignore empty or nil values:
 
 ```ruby
 filter = Kiroshi::Filter.new(:name)
-filter.apply(Document.all, { name: nil })        # Returns original scope
-filter.apply(Document.all, { name: '' })         # Returns original scope  
-filter.apply(Document.all, {})                   # Returns original scope
-filter.apply(Document.all, { name: 'value' })    # Applies filter
+filter.apply(scope: Document.all, value: nil)        # Returns original scope
+filter.apply(scope: Document.all, value: '')         # Returns original scope  
+filter.apply(scope: Document.all, value: 'value')    # Applies filter
 ```
 
 #### Handling Column Name Ambiguity
@@ -271,12 +270,12 @@ scope = Document.joins(:tags)  # Both documents and tags have 'name' column
 
 # Specify which table to filter on
 name_filter = Kiroshi::Filter.new(:name, match: :like, table: :tags)
-result = name_filter.apply(scope, { name: 'ruby' })
+result = name_filter.apply(scope: scope, value: 'ruby')
 # Generates: WHERE tags.name LIKE '%ruby%'
 
 # Or filter by document name specifically
 doc_name_filter = Kiroshi::Filter.new(:name, match: :like, table: :documents)
-result = doc_name_filter.apply(scope, { name: 'guide' })
+result = doc_name_filter.apply(scope: scope, value: 'guide')
 # Generates: WHERE documents.name LIKE '%guide%'
 ```
 
