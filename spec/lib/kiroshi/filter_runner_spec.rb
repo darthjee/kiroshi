@@ -4,12 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Kiroshi::FilterRunner, type: :model do
   describe '#apply' do
-    subject(:runner) { described_class.new(filter: filter, scope: scope, filters: filters) }
+    subject(:runner) { described_class.new(filter: filter, scope: scope, value: filter_value) }
 
     let(:scope)                  { Document.all }
     let(:filter_value)           { 'test_value' }
-    let(:filters)                { { name: filter_value } }
-    let!(:matching_document)     { create(:document, name: filter_value) }
+    let(:document_name)          { filter_value }
+    let!(:matching_document)     { create(:document, name: document_name) }
     let!(:non_matching_document) { create(:document, name: 'other_value') }
 
     context 'when filter match is :exact' do
@@ -57,8 +57,9 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
     end
 
     context 'when filter value is not present' do
-      let(:filter)  { Kiroshi::Filter.new(:name) }
-      let(:filters) { { name: nil } }
+      let(:document_name) { 'Some name' }
+      let(:filter)        { Kiroshi::Filter.new(:name) }
+      let(:filter_value)  { nil }
 
       it 'returns the original scope unchanged' do
         expect(runner.apply).to eq(scope)
@@ -66,35 +67,28 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
     end
 
     context 'when filter value is empty string' do
-      let(:filter) { Kiroshi::Filter.new(:name) }
-      let(:filters) { { name: '' } }
+      let(:document_name) { 'Some name' }
+      let(:filter)       { Kiroshi::Filter.new(:name) }
+      let(:filter_value) { '' }
 
       it 'returns the original scope unchanged' do
         expect(runner.apply).to eq(scope)
       end
     end
 
-    context 'when filter attribute is not in filters hash' do
-      let(:filter) { Kiroshi::Filter.new(:status) }
-      let(:filters) { { name: 'test_value' } }
+    context 'when filter value is blank' do
+      let(:document_name) { 'Some name' }
+      let(:filter)       { Kiroshi::Filter.new(:name) }
+      let(:filter_value) { nil }
 
       it 'returns the original scope unchanged' do
         expect(runner.apply).to eq(scope)
       end
     end
 
-    context 'when filters hash is empty' do
-      let(:filter) { Kiroshi::Filter.new(:name) }
-      let(:filters) { {} }
-
-      it 'returns the original scope unchanged' do
-        expect(runner.apply).to eq(scope)
-      end
-    end
-
-    context 'with multiple attributes' do
-      let(:filter) { Kiroshi::Filter.new(:status, match: :exact) }
-      let(:filters)                { { name: 'test_name', status: 'finished' } }
+    context 'with status filter' do
+      let(:filter)                 { Kiroshi::Filter.new(:status, match: :exact) }
+      let(:filter_value)           { 'finished' }
       let!(:matching_document)     { create(:document, name: 'test_name', status: 'finished') }
       let!(:non_matching_document) { create(:document, name: 'other_name', status: 'processing') }
 

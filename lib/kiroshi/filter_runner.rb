@@ -30,7 +30,7 @@ module Kiroshi
     # @param value [Object, nil] the specific value to use for filtering, defaults to nil
     #
     # @since 0.1.0
-    def initialize(filter:, scope:, filters:, value: nil)
+    def initialize(filter:, scope:, filters: nil, value: nil)
       @filter = filter
       @scope = scope
       @filters = filters
@@ -78,7 +78,7 @@ module Kiroshi
     #
     # @since 0.1.1
     def filter_value
-      @filter_value ||= filters[filter.attribute]
+      @filter_value ||= (filters ? filters[filter.attribute] : nil)
     end
 
     # Returns the current scope being filtered
