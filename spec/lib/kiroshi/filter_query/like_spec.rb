@@ -28,8 +28,13 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       expect(query.apply).not_to include(non_matching_document)
     end
 
+    let(:expected_sql) do
+      <<~SQL.squish
+        SELECT "documents".* FROM "documents" WHERE (documents.name LIKE '%test%')
+      SQL
+    end
+
     it 'generates correct SQL with LIKE operation' do
-      expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (documents.name LIKE '%test%')"
       expect(query.apply.to_sql).to eq(expected_sql)
     end
 
@@ -55,7 +60,9 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       end
 
       it 'generates correct SQL for status filtering' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (documents.status LIKE '%pub%')"
+        expected_sql = <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE (documents.status LIKE '%pub%')
+        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -82,7 +89,9 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       end
 
       it 'generates correct SQL for numeric string filtering' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (documents.version LIKE '%1.2%')"
+        expected_sql = <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE (documents.version LIKE '%1.2%')
+        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -95,7 +104,9 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       end
 
       it 'still generates valid SQL' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (documents.name LIKE '%nonexistent%')"
+        expected_sql = <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE (documents.name LIKE '%nonexistent%')
+        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end

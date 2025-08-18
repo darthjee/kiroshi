@@ -23,8 +23,13 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       expect(query.apply).not_to include(non_matching_document)
     end
 
+    let(:expected_sql) do
+      <<~SQL.squish
+        SELECT "documents".* FROM "documents" WHERE "documents"."name" = 'test_document'
+      SQL
+    end
+
     it 'generates correct SQL with exact equality' do
-      expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE \"documents\".\"name\" = 'test_document'"
       expect(query.apply.to_sql).to eq(expected_sql)
     end
 
@@ -45,7 +50,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       it 'generates correct SQL for status filtering' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE \"documents\".\"status\" = 'published'"
+        expected_sql = <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE "documents"."status" = 'published'
+        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -67,7 +74,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       it 'generates correct SQL for numeric filtering' do
-        expected_sql = 'SELECT "documents".* FROM "documents" WHERE "documents"."priority" = 1'
+        expected_sql = <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE "documents"."priority" = 1
+        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -89,7 +98,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       it 'generates correct SQL for boolean filtering' do
-        expected_sql = 'SELECT "documents".* FROM "documents" WHERE "documents"."active" = 1'
+        expected_sql = <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE "documents"."active" = 1
+        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -102,7 +113,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       it 'still generates valid SQL' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE \"documents\".\"name\" = 'nonexistent_value'"
+        expected_sql = <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE "documents"."name" = 'nonexistent_value'
+        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -160,7 +173,12 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
         end
 
         it 'generates SQL with tags table qualification' do
-          expected_sql = 'SELECT "documents".* FROM "documents" INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" WHERE "tags"."name" = \'ruby\''
+          expected_sql = <<~SQL.squish
+            SELECT "documents".* FROM "documents" 
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            WHERE "tags"."name" = 'ruby'
+          SQL
           expect(query.apply.to_sql).to eq(expected_sql)
         end
       end
@@ -182,7 +200,12 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
         end
 
         it 'generates SQL with documents table qualification' do
-          expected_sql = 'SELECT "documents".* FROM "documents" INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" WHERE "documents"."name" = \'JS Guide\''
+          expected_sql = <<~SQL.squish
+            SELECT "documents".* FROM "documents" 
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            WHERE "documents"."name" = 'JS Guide'
+          SQL
           expect(query.apply.to_sql).to eq(expected_sql)
         end
       end
@@ -195,7 +218,12 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
         end
 
         it 'generates SQL with string table qualification' do
-          expected_sql = 'SELECT "documents".* FROM "documents" INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" WHERE "tags"."name" = \'ruby\''
+          expected_sql = <<~SQL.squish
+            SELECT "documents".* FROM "documents" 
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            WHERE "tags"."name" = 'ruby'
+          SQL
           expect(query.apply.to_sql).to eq(expected_sql)
         end
       end
@@ -214,7 +242,12 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
         end
 
         it 'generates SQL with tags table qualification for id attribute' do
-          expected_sql = "SELECT \"documents\".* FROM \"documents\" INNER JOIN \"documents_tags\" ON \"documents_tags\".\"document_id\" = \"documents\".\"id\" INNER JOIN \"tags\" ON \"tags\".\"id\" = \"documents_tags\".\"tag_id\" WHERE \"tags\".\"id\" = #{first_tag.id}"
+          expected_sql = <<~SQL.squish
+            SELECT "documents".* FROM "documents" 
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            WHERE "tags"."id" = #{first_tag.id}
+          SQL
           expect(query.apply.to_sql).to eq(expected_sql)
         end
       end
