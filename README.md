@@ -113,7 +113,7 @@ class DocumentsController < ApplicationController
   end
 
   def filter_params
-    params.permit(:name, :status, :category, :author)
+    params[:filter]&.permit(:name, :status, :category, :author)
   end
 end
 
@@ -141,7 +141,7 @@ def articles
 end
 
 def article_filters
-  ArticleFilters.new(params.permit(:title, :published, :tag))
+  ArticleFilters.new(params[:filter]&.permit(:title, :published, :tag))
 end
 ```
 

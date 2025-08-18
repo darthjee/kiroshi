@@ -39,7 +39,7 @@
 #     end
 #
 #     def filter_params
-#       params.permit(:title, :author, :category, :tag)
+#       params[:filter]&.permit(:title, :author, :category, :tag)
 #     end
 #   end
 #
@@ -129,7 +129,7 @@
 #     end
 #
 #     def filter_params
-#       params.permit(:name, :category, :brand, :price_range, :in_stock)
+#       params[:filter]&.permit(:name, :category, :brand, :price_range, :in_stock)
 #     end
 #
 #     def applied_filter_count
