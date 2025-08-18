@@ -125,10 +125,10 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     end
 
     context 'with special characters in filter value' do
-      let(:filter_value)           { 'user@' }
-      let!(:email_document)        { create(:document, name: 'user@example.com') }
+      let(:filter_value) { 'user@' }
+      let!(:email_document)         { create(:document, name: 'user@example.com') }
       let!(:partial_email_document) { create(:document, name: 'admin_user@test.org') }
-      let!(:no_match_document)     { create(:document, name: 'username') }
+      let!(:no_match_document)      { create(:document, name: 'username') }
 
       it 'includes documents with special character match' do
         expect(query.apply).to include(email_document)
