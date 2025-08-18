@@ -19,6 +19,9 @@ module Kiroshi
   #
   # @since 0.1.1
   class FilterQuery
+    autoload :Exact, 'kiroshi/filter_query/exact'
+    autoload :Like, 'kiroshi/filter_query/like'
+
     class << self
       # Factory method to create the appropriate query strategy
       #
@@ -123,73 +126,5 @@ module Kiroshi
     #   Returns the filter value for the current filter's attribute
     #
     #   @return [Object, nil] the filter value or nil if not present
-
-    # @author darthjee
-    #
-    # Query strategy for exact matching
-    #
-    # This class implements the exact match query strategy, generating
-    # WHERE clauses with exact equality comparisons.
-    #
-    # @example Applying exact match query
-    #   query = Kiroshi::FilterQuery::Exact.new(filter_runner)
-    #   query.apply
-    #   # Generates: WHERE attribute = 'value'
-    #
-    # @since 0.1.1
-    class Exact < FilterQuery
-      # Applies exact match filtering to the scope
-      #
-      # This method generates a WHERE clause with exact equality matching
-      # for the filter's attribute and value.
-      #
-      # @return [ActiveRecord::Relation] the filtered scope with exact match
-      #
-      # @example Applying exact match
-      #   query = Exact.new(filter_runner)
-      #   query.apply
-      #   # Generates: WHERE status = 'published'
-      #
-      # @since 0.1.1
-      def apply
-        scope.where(attribute => filter_value)
-      end
-    end
-
-    # @author darthjee
-    #
-    # Query strategy for LIKE matching
-    #
-    # This class implements the LIKE match query strategy, generating
-    # WHERE clauses with SQL LIKE operations for partial matching.
-    #
-    # @example Applying LIKE match query
-    #   query = Kiroshi::FilterQuery::Like.new(filter_runner)
-    #   query.apply
-    #   # Generates: WHERE table_name.attribute LIKE '%value%'
-    #
-    # @since 0.1.1
-    class Like < FilterQuery
-      # Applies LIKE match filtering to the scope
-      #
-      # This method generates a WHERE clause with SQL LIKE operation
-      # for partial matching, including table name prefix to avoid
-      # column ambiguity in complex queries.
-      #
-      # @return [ActiveRecord::Relation] the filtered scope with LIKE match
-      #
-      # @example Applying LIKE match
-      #   query = Like.new(filter_runner)
-      #   query.apply
-      #   # Generates: WHERE documents.name LIKE '%ruby%'
-      #
-      # @since 0.1.1
-      def apply
-        scope.where(
-          "#{table_name}.#{attribute} LIKE ?",
-          "%#{filter_value}%"
-        )
-      end
-    end
   end
 end
