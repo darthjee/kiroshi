@@ -153,11 +153,11 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
     end
 
-    xcontext 'when filter was defined in the superclass' do
+    context 'when filter was defined in the superclass' do
       subject(:filters_class) { Class.new(parent_class) }
 
       let(:parent_class) { Class.new(described_class) }
-      let(:filters) { { name: 'test_name' } }
+      let(:filters)      { { name: 'test_name' } }
 
       before do
         parent_class.filter_by :name
@@ -204,9 +204,13 @@ RSpec.describe Kiroshi::Filters, type: :model do
         end
 
         it 'does not use the parent class filter configuration' do
-          result = filter_instance.apply(scope)
-          expect(result.to_sql).to include('LIKE')
-          expect(result.to_sql).to include("'%test%'")
+          expect(filter_instance.apply(scope).to_sql)
+            .to include('LIKE')
+        end
+
+        it 'generates SQL that includes LIKE operation with the filter value' do
+          expect(filter_instance.apply(scope).to_sql)
+            .to include("'%test%'")
         end
       end
     end
