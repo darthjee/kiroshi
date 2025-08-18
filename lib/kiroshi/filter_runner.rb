@@ -15,6 +15,11 @@ module Kiroshi
   #   runner = Kiroshi::FilterRunner.new(filter: filter, scope: User.all, filters: { name: 'John' })
   #   result = runner.apply
   #
+  # @example Creating and running a filter with specific value
+  #   filter = Kiroshi::Filter.new(:status)
+  #   runner = Kiroshi::FilterRunner.new(filter: filter, scope: User.all, filters: {}, value: 'active')
+  #   result = runner.apply
+  #
   # @since 0.1.0
   class FilterRunner
     # Creates a new FilterRunner instance
@@ -22,12 +27,14 @@ module Kiroshi
     # @param filter [Kiroshi::Filter] the filter configuration
     # @param scope [ActiveRecord::Relation] the scope to filter
     # @param filters [Hash] a hash containing filter values
+    # @param value [Object, nil] the specific value to use for filtering, defaults to nil
     #
     # @since 0.1.0
-    def initialize(filter:, scope:, filters:)
+    def initialize(filter:, scope:, filters:, value: nil)
       @filter = filter
       @scope = scope
       @filters = filters
+      @filter_value = value
     end
 
     # Applies the filter logic to the scope
@@ -45,6 +52,10 @@ module Kiroshi
     #   runner = FilterRunner.new(filter: filter, scope: scope, filters: { title: 'Ruby' })
     #   runner.apply
     #
+    # @example With specific value provided
+    #   runner = FilterRunner.new(filter: filter, scope: scope, filters: {}, value: 'specific_value')
+    #   runner.apply
+    #
     # @example With no matching value
     #   runner = FilterRunner.new(filter: filter, scope: scope, filters: { name: nil })
     #   runner.apply
@@ -60,11 +71,14 @@ module Kiroshi
 
     # Returns the filter value for the current filter's attribute
     #
+    # If a specific value was provided during initialization, it uses that value.
+    # Otherwise, it falls back to looking up the value in the filters hash.
+    #
     # @return [Object, nil] the filter value or nil if not present
     #
     # @since 0.1.1
     def filter_value
-      filters[filter.attribute]
+      @filter_value ||= filters[filter.attribute]
     end
 
     # Returns the current scope being filtered
