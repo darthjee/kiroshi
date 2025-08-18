@@ -113,7 +113,8 @@ module Kiroshi
     #
     # @since 0.1.0
     def apply(scope:, filters:, value: nil)
-      runner = FilterRunner.new(filter: self, scope: scope, filters: filters, value: value)
+      value ||= filters[attribute]
+      runner = FilterRunner.new(filter: self, scope: scope, value: value)
       runner.apply
     end
   end
