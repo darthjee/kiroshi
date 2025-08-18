@@ -82,7 +82,47 @@ module Kiroshi
 
     attr_reader :filter_runner
 
+    # @!method filter_runner
+    #   @api private
+    #   @private
+    #
+    #   Returns the filter runner instance
+    #
+    #   @return [Kiroshi::FilterRunner] the filter runner instance
+
     delegate :scope, :attribute, :table_name, :filter_value, to: :filter_runner
+
+    # @!method scope
+    #   @api private
+    #   @private
+    #
+    #   Returns the ActiveRecord scope being filtered
+    #
+    #   @return [ActiveRecord::Relation] the scope being filtered
+
+    # @!method attribute
+    #   @api private
+    #   @private
+    #
+    #   Returns the attribute name to filter by
+    #
+    #   @return [Symbol] the attribute name to filter by
+
+    # @!method table_name
+    #   @api private
+    #   @private
+    #
+    #   Returns the table name from the scope
+    #
+    #   @return [String] the table name
+
+    # @!method filter_value
+    #   @api private
+    #   @private
+    #
+    #   Returns the filter value for the current filter's attribute
+    #
+    #   @return [Object, nil] the filter value or nil if not present
 
     # @author darthjee
     #
