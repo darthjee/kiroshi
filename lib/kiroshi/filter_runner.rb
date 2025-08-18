@@ -12,12 +12,12 @@ module Kiroshi
   #
   # @example Creating and running a filter
   #   filter = Kiroshi::Filter.new(:name, match: :like)
-  #   runner = Kiroshi::FilterRunner.new(filter: filter, scope: User.all, filters: { name: 'John' })
+  #   runner = Kiroshi::FilterRunner.new(filter: filter, scope: User.all, value: 'John')
   #   result = runner.apply
   #
   # @example Creating and running a filter with specific value
   #   filter = Kiroshi::Filter.new(:status)
-  #   runner = Kiroshi::FilterRunner.new(filter: filter, scope: User.all, filters: {}, value: 'active')
+  #   runner = Kiroshi::FilterRunner.new(filter: filter, scope: User.all, value: 'active')
   #   result = runner.apply
   #
   # @since 0.1.0
@@ -26,14 +26,12 @@ module Kiroshi
     #
     # @param filter [Kiroshi::Filter] the filter configuration
     # @param scope [ActiveRecord::Relation] the scope to filter
-    # @param filters [Hash] a hash containing filter values
     # @param value [Object, nil] the specific value to use for filtering, defaults to nil
     #
     # @since 0.1.0
-    def initialize(filter:, scope:, filters: nil, value: nil)
+    def initialize(filter:, scope:, value: nil)
       @filter = filter
       @scope = scope
-      @filters = filters
       @filter_value = value
     end
 
@@ -45,19 +43,19 @@ module Kiroshi
     # @return [ActiveRecord::Relation] the filtered scope
     #
     # @example Applying exact match filter
-    #   runner = FilterRunner.new(filter: filter, scope: scope, filters: { name: 'John' })
+    #   runner = FilterRunner.new(filter: filter, scope: scope, value: 'John')
     #   runner.apply
     #
     # @example Applying LIKE filter
-    #   runner = FilterRunner.new(filter: filter, scope: scope, filters: { title: 'Ruby' })
+    #   runner = FilterRunner.new(filter: filter, scope: scope, value: 'Ruby')
     #   runner.apply
     #
     # @example With specific value provided
-    #   runner = FilterRunner.new(filter: filter, scope: scope, filters: {}, value: 'specific_value')
+    #   runner = FilterRunner.new(filter: filter, scope: scope, value: 'specific_value')
     #   runner.apply
     #
-    # @example With no matching value
-    #   runner = FilterRunner.new(filter: filter, scope: scope, filters: { name: nil })
+    # @example With no value (returns unchanged scope)
+    #   runner = FilterRunner.new(filter: filter, scope: scope, value: nil)
     #   runner.apply
     #   # Returns the original scope unchanged
     #
@@ -69,16 +67,13 @@ module Kiroshi
       query_strategy.apply
     end
 
-    # Returns the filter value for the current filter's attribute
-    #
-    # If a specific value was provided during initialization, it uses that value.
-    # Otherwise, it falls back to looking up the value in the filters hash.
+    # Returns the filter value for the current filter
     #
     # @return [Object, nil] the filter value or nil if not present
     #
     # @since 0.1.1
     def filter_value
-      @filter_value ||= (filters ? filters[filter.attribute] : nil)
+      @filter_value
     end
 
     # Returns the current scope being filtered
@@ -98,12 +93,12 @@ module Kiroshi
     #
     # @example With filter table_name specified
     #   filter = Kiroshi::Filter.new(:name, table: 'tags')
-    #   runner = FilterRunner.new(filter: filter, scope: Document.joins(:tags), filters: {})
+    #   runner = FilterRunner.new(filter: filter, scope: Document.joins(:tags), value: 'ruby')
     #   runner.table_name # => 'tags'
     #
     # @example Without filter table_name (fallback to scope)
     #   filter = Kiroshi::Filter.new(:name)
-    #   runner = FilterRunner.new(filter: filter, scope: Document.all, filters: {})
+    #   runner = FilterRunner.new(filter: filter, scope: Document.all, value: 'test')
     #   runner.table_name # => 'documents'
     #
     # @since 0.1.1
@@ -120,7 +115,7 @@ module Kiroshi
 
     private
 
-    attr_reader :filter, :filters
+    attr_reader :filter
 
     # @!method filter
     #   @api private
@@ -129,14 +124,6 @@ module Kiroshi
     #   Returns the filter configuration
     #
     #   @return [Kiroshi::Filter] the filter configuration
-
-    # @!method filters
-    #   @api private
-    #   @private
-    #
-    #   Returns the hash of filter values
-    #
-    #   @return [Hash] the hash of filter values
 
     delegate :attribute, to: :filter
     delegate :table_name, to: :scope, prefix: true
