@@ -75,8 +75,8 @@
 #
 #   # Apply filters step by step
 #   scope = Document.all
-#   scope = name_filter.apply(scope, { name: 'annual' })
-#   scope = status_filter.apply(scope, { status: 'published' })
+#   scope = name_filter.apply(scope: scope, filters: { name: 'annual' })
+#   scope = status_filter.apply(scope: scope, filters: { status: 'published' })
 #
 # @example Filter matching types
 #   # Exact matching (default)

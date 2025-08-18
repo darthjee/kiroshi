@@ -10,11 +10,11 @@ module Kiroshi
   #
   # @example Creating and applying an exact filter
   #   filter = Kiroshi::Filter.new(:name)
-  #   filtered_scope = filter.apply(Document.all, { name: 'John' })
+  #   filtered_scope = filter.apply(scope: Document.all, filters: { name: 'John' })
   #
   # @example Creating and applying a LIKE filter
   #   filter = Kiroshi::Filter.new(:title, match: :like)
-  #   filtered_scope = filter.apply(Article.all, { title: 'Ruby' })
+  #   filtered_scope = filter.apply(scope: Article.all, filters: { title: 'Ruby' })
   #
   # @since 0.1.0
   class Filter
@@ -78,31 +78,31 @@ module Kiroshi
     #
     # @example Applying an exact filter
     #   filter = Kiroshi::Filter.new(:status)
-    #   filter.apply(Document.all, { status: 'published' })
+    #   filter.apply(scope: Document.all, filters: { status: 'published' })
     #   # Generates: WHERE status = 'published'
     #
     # @example Applying a LIKE filter
     #   filter = Kiroshi::Filter.new(:title, match: :like)
-    #   filter.apply(Article.all, { title: 'Ruby' })
+    #   filter.apply(scope: Article.all, filters: { title: 'Ruby' })
     #   # Generates: WHERE title LIKE '%Ruby%'
     #
     # @example Applying a filter with table qualification
     #   filter = Kiroshi::Filter.new(:name, table: 'documents')
-    #   filter.apply(Document.joins(:tags), { name: 'report' })
+    #   filter.apply(scope: Document.joins(:tags), filters: { name: 'report' })
     #   # Generates: WHERE documents.name = 'report'
     #
     # @example Applying a filter with table qualification for tags
     #   filter = Kiroshi::Filter.new(:name, table: 'tags')
-    #   filter.apply(Document.joins(:tags), { name: 'ruby' })
+    #   filter.apply(scope: Document.joins(:tags), filters: { name: 'ruby' })
     #   # Generates: WHERE tags.name = 'ruby'
     #
     # @example With empty filter value
     #   filter = Kiroshi::Filter.new(:name)
-    #   filter.apply(User.all, { name: nil })
+    #   filter.apply(scope: User.all, filters: { name: nil })
     #   # Returns the original scope unchanged
     #
     # @since 0.1.0
-    def apply(scope, filters)
+    def apply(scope:, filters:)
       runner = FilterRunner.new(filter: self, scope: scope, filters: filters)
       runner.apply
     end

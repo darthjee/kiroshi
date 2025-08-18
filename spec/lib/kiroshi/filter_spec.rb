@@ -13,12 +13,12 @@ RSpec.describe Kiroshi::Filter, type: :model do
     context 'when match is :exact' do
       subject(:filter) { described_class.new(:name, match: :exact) }
 
-      it 'returns exact matches' do
-        expect(filter.apply(scope, filters)).to include(matching_document)
+      it 'returns documents matching the filter' do
+        expect(filter.apply(scope: scope, filters: filters)).to include(matching_document)
       end
 
-      it 'does not return non-matching records' do
-        expect(filter.apply(scope, filters)).not_to include(non_matching_document)
+      it 'does not return documents not matching the filter' do
+        expect(filter.apply(scope: scope, filters: filters)).not_to include(non_matching_document)
       end
     end
 
@@ -30,11 +30,11 @@ RSpec.describe Kiroshi::Filter, type: :model do
       let!(:non_matching_document) { create(:document, name: 'other_value') }
 
       it 'returns partial matches' do
-        expect(filter.apply(scope, filters)).to include(matching_document)
+        expect(filter.apply(scope: scope, filters: filters)).to include(matching_document)
       end
 
       it 'does not return non-matching records' do
-        expect(filter.apply(scope, filters)).not_to include(non_matching_document)
+        expect(filter.apply(scope: scope, filters: filters)).not_to include(non_matching_document)
       end
     end
 
@@ -42,11 +42,11 @@ RSpec.describe Kiroshi::Filter, type: :model do
       subject(:filter) { described_class.new(:name) }
 
       it 'defaults to exact match returning only exact matches' do
-        expect(filter.apply(scope, filters)).to include(matching_document)
+        expect(filter.apply(scope: scope, filters: filters)).to include(matching_document)
       end
 
       it 'defaults to exact match returning not returning when filtering by a non-matching value' do
-        expect(filter.apply(scope, filters)).not_to include(non_matching_document)
+        expect(filter.apply(scope: scope, filters: filters)).not_to include(non_matching_document)
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe Kiroshi::Filter, type: :model do
       let(:filters) { { name: nil } }
 
       it 'returns the original scope unchanged' do
-        expect(filter.apply(scope, filters)).to eq(scope)
+        expect(filter.apply(scope: scope, filters: filters)).to eq(scope)
       end
     end
   end

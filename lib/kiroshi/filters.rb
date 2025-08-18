@@ -159,7 +159,7 @@ module Kiroshi
     # @since 0.1.0
     def apply(scope)
       self.class.filter_configs.each_value do |filter|
-        scope = filter.apply(scope, filters)
+        scope = filter.apply(scope: scope, filters: filters)
       end
 
       scope
