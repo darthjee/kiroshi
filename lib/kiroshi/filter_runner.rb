@@ -74,6 +74,29 @@ module Kiroshi
     # @since 0.1.1
     attr_reader :scope
 
+    # Returns the table name to use for the filter
+    #
+    # This method prioritizes the filter's table_name over the scope's table_name.
+    # If the filter has a specific table_name configured, it uses that;
+    # otherwise, it falls back to the scope's table_name.
+    #
+    # @return [String] the table name to use for filtering
+    #
+    # @example With filter table_name specified
+    #   filter = Kiroshi::Filter.new(:name, table: 'tags')
+    #   runner = FilterRunner.new(filter: filter, scope: Document.joins(:tags), filters: {})
+    #   runner.table_name # => 'tags'
+    #
+    # @example Without filter table_name (fallback to scope)
+    #   filter = Kiroshi::Filter.new(:name)
+    #   runner = FilterRunner.new(filter: filter, scope: Document.all, filters: {})
+    #   runner.table_name # => 'documents'
+    #
+    # @since 0.1.1
+    def table_name
+      filter_table_name || scope_table_name
+    end
+
     # @!method scope
     #   @api private
     #
@@ -104,29 +127,6 @@ module Kiroshi
     delegate :attribute, to: :filter
     delegate :table_name, to: :scope, prefix: true
     delegate :table_name, to: :filter, prefix: true
-
-    # Returns the table name to use for the filter
-    #
-    # This method prioritizes the filter's table_name over the scope's table_name.
-    # If the filter has a specific table_name configured, it uses that;
-    # otherwise, it falls back to the scope's table_name.
-    #
-    # @return [String] the table name to use for filtering
-    #
-    # @example With filter table_name specified
-    #   filter = Kiroshi::Filter.new(:name, table: 'tags')
-    #   runner = FilterRunner.new(filter: filter, scope: Document.joins(:tags), filters: {})
-    #   runner.table_name # => 'tags'
-    #
-    # @example Without filter table_name (fallback to scope)
-    #   filter = Kiroshi::Filter.new(:name)
-    #   runner = FilterRunner.new(filter: filter, scope: Document.all, filters: {})
-    #   runner.table_name # => 'documents'
-    #
-    # @since 0.1.1
-    def table_name
-      filter_table_name || scope_table_name
-    end
 
     # @!method attribute
     #   @api private
