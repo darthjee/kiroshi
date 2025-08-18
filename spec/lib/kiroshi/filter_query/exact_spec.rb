@@ -15,18 +15,18 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
     let!(:matching_document)     { create(:document, name: 'test_document') }
     let!(:non_matching_document) { create(:document, name: 'other_document') }
 
+    let(:expected_sql) do
+      <<~SQL.squish
+        SELECT "documents".* FROM "documents" WHERE "documents"."name" = 'test_document'
+      SQL
+    end
+
     it 'returns records that exactly match the filter value' do
       expect(query.apply).to include(matching_document)
     end
 
     it 'does not return records that do not exactly match' do
       expect(query.apply).not_to include(non_matching_document)
-    end
-
-    let(:expected_sql) do
-      <<~SQL.squish
-        SELECT "documents".* FROM "documents" WHERE "documents"."name" = 'test_document'
-      SQL
     end
 
     it 'generates correct SQL with exact equality' do
@@ -174,9 +174,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
 
         let(:expected_sql) do
           <<~SQL.squish
-            SELECT "documents".* FROM "documents" 
-            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
-            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            SELECT "documents".* FROM "documents"#{' '}
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id"#{' '}
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id"#{' '}
             WHERE "tags"."name" = 'ruby'
           SQL
         end
@@ -204,9 +204,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
 
         let(:expected_sql) do
           <<~SQL.squish
-            SELECT "documents".* FROM "documents" 
-            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
-            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            SELECT "documents".* FROM "documents"#{' '}
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id"#{' '}
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id"#{' '}
             WHERE "documents"."name" = 'JS Guide'
           SQL
         end
@@ -233,9 +233,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
 
         let(:expected_sql) do
           <<~SQL.squish
-            SELECT "documents".* FROM "documents" 
-            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
-            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            SELECT "documents".* FROM "documents"#{' '}
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id"#{' '}
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id"#{' '}
             WHERE "tags"."name" = 'ruby'
           SQL
         end
@@ -256,9 +256,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
 
         let(:expected_sql) do
           <<~SQL.squish
-            SELECT "documents".* FROM "documents" 
-            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" 
-            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" 
+            SELECT "documents".* FROM "documents"#{' '}
+            INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id"#{' '}
+            INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id"#{' '}
             WHERE "tags"."id" = #{first_tag.id}
           SQL
         end

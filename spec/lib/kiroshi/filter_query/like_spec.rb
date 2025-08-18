@@ -16,6 +16,12 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     let!(:another_match)         { create(:document, name: 'my_test_file') }
     let!(:non_matching_document) { create(:document, name: 'other_document') }
 
+    let(:expected_sql) do
+      <<~SQL.squish
+        SELECT "documents".* FROM "documents" WHERE (documents.name LIKE '%test%')
+      SQL
+    end
+
     it 'returns records that partially match the filter value' do
       expect(query.apply).to include(matching_document)
     end
@@ -26,12 +32,6 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
     it 'does not return records that do not contain the filter value' do
       expect(query.apply).not_to include(non_matching_document)
-    end
-
-    let(:expected_sql) do
-      <<~SQL.squish
-        SELECT "documents".* FROM "documents" WHERE (documents.name LIKE '%test%')
-      SQL
     end
 
     it 'generates correct SQL with LIKE operation' do
