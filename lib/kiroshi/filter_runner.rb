@@ -28,7 +28,7 @@ module Kiroshi
     # @param scope [ActiveRecord::Relation] the scope to filter
     # @param value [Object, nil] the specific value to use for filtering, defaults to nil
     #
-    # @since 0.1.2
+    # @since 0.2.0
     def initialize(filter:, scope:, value: nil)
       @filter = filter
       @scope = scope
@@ -85,7 +85,7 @@ module Kiroshi
     #
     #   @return [Object] the filter value or nil if not present
     #
-    #   @since 0.1.2
+    #   @since 0.2.0
 
     # Returns the table name to use for the filter
     #

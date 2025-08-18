@@ -24,7 +24,7 @@ module Kiroshi
     #   DocumentFilters.filter_configs.keys # => [:name, :status, :category]
     #   DocumentFilters.filter_configs[:name].match # => :like
     #
-    # @since 0.1.2
+    # @since 0.2.0
     # @author darthjee
     module ClassMethods
       # Defines a filter for the current filter class
@@ -83,7 +83,7 @@ module Kiroshi
       # @see .filter_configs for accessing the complete filter registry
       # @see Filters#apply for how this method is used during filtering
       #
-      # @since 0.1.2
+      # @since 0.2.0
       def filter_for(attribute)
         filter_configs[attribute]
       end
@@ -137,7 +137,7 @@ module Kiroshi
       # @see .filter_by for adding filters to this configuration
       # @see Filters#apply for how these configurations are used
       #
-      # @since 0.1.2
+      # @since 0.2.0
       def filter_configs
         @filter_configs ||= {}
       end

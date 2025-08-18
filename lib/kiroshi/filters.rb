@@ -156,7 +156,7 @@ module Kiroshi
     #   filtered_articles = filters.apply(Article.all)
     #   # Generates: WHERE title LIKE '%Ruby%'
     #
-    # @since 0.1.2
+    # @since 0.2.0
     def apply(scope)
       filters.compact.each do |attribute, value|
         filter = self.class.filter_for(attribute)
