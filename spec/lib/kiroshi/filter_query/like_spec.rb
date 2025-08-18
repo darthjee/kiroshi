@@ -166,5 +166,90 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
         expect(query.apply).not_to include(no_match_document)
       end
     end
+
+    context 'when filter has table configured' do
+      let(:scope) { Document.joins(:tags) }
+      let(:filter_value) { 'ruby' }
+      let(:filters) { { name: filter_value } }
+
+      let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
+      let!(:second_tag) { Tag.find_or_create_by(name: 'programming') }
+      let!(:third_tag) { Tag.find_or_create_by(name: 'ruby_on_rails') }
+
+      let!(:document_with_ruby_tag) { create(:document, name: 'My Document') }
+      let!(:document_with_rails_tag) { create(:document, name: 'Rails Guide') }
+      let!(:document_without_tag) { create(:document, name: 'Other Document') }
+
+      before do
+        document_with_ruby_tag.tags << [first_tag]
+        document_with_rails_tag.tags << [third_tag]
+      end
+
+      context 'when filtering by tags table' do
+        let(:filter) { Kiroshi::Filter.new(:name, match: :like, table: :tags) }
+
+        it 'returns documents with tags that partially match the filter value' do
+          expect(query.apply).to include(document_with_ruby_tag)
+        end
+
+        it 'returns documents with tags that contain the filter value' do
+          expect(query.apply).to include(document_with_rails_tag)
+        end
+
+        it 'does not return documents without matching tags' do
+          expect(query.apply).not_to include(document_without_tag)
+        end
+
+        it 'generates SQL with tags table qualification' do
+          result_sql = query.apply.to_sql
+          expect(result_sql).to include('tags.name LIKE')
+        end
+
+        it 'generates SQL with correct LIKE pattern for tag name' do
+          result_sql = query.apply.to_sql
+          expect(result_sql).to include("'%ruby%'")
+        end
+      end
+
+      context 'when filtering by documents table explicitly' do
+        let(:filter) { Kiroshi::Filter.new(:name, match: :like, table: :documents) }
+        let(:filter_value) { 'Guide' }
+
+        it 'returns documents that partially match the filter value in document name' do
+          expect(query.apply).to include(document_with_rails_tag)
+        end
+
+        it 'does not return documents that do not match document name' do
+          expect(query.apply).not_to include(document_with_ruby_tag)
+        end
+
+        it 'does not return documents without matching document name' do
+          expect(query.apply).not_to include(document_without_tag)
+        end
+
+        it 'generates SQL with documents table qualification' do
+          result_sql = query.apply.to_sql
+          expect(result_sql).to include('documents.name LIKE')
+        end
+
+        it 'generates SQL with correct LIKE pattern for document name' do
+          result_sql = query.apply.to_sql
+          expect(result_sql).to include("'%Guide%'")
+        end
+      end
+
+      context 'when table is specified as string' do
+        let(:filter) { Kiroshi::Filter.new(:name, match: :like, table: 'tags') }
+
+        it 'works the same as with symbol table name' do
+          expect(query.apply).to include(document_with_ruby_tag)
+        end
+
+        it 'generates SQL with string table qualification' do
+          result_sql = query.apply.to_sql
+          expect(result_sql).to include('tags.name LIKE')
+        end
+      end
+    end
   end
 end
