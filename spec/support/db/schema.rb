@@ -8,5 +8,6 @@ ActiveRecord::Schema.define do
     t.string   :status
     t.boolean  :active
     t.integer  :priority
+    t.string   :version
   end
 end
