@@ -152,5 +152,63 @@ RSpec.describe Kiroshi::Filters, type: :model do
         end
       end
     end
+
+    context 'when filter was defined in the superclass' do
+      subject(:filters_class) { Class.new(parent_class) }
+
+      let(:parent_class) { Class.new(described_class) }
+      let(:filters) { { name: 'test_name' } }
+
+      before do
+        parent_class.filter_by :name
+      end
+
+      it 'applies the filter defined in the parent class' do
+        expect(filter_instance.apply(scope)).to include(document)
+      end
+
+      it 'does not return documents not matching the inherited filter' do
+        expect(filter_instance.apply(scope)).not_to include(other_document)
+      end
+
+      it 'generates SQL that includes the filter value from parent class' do
+        result = filter_instance.apply(scope)
+        expect(result.to_sql).to include("'test_name'")
+      end
+
+      context 'when child class adds its own filter' do
+        let(:filters) { { name: 'test_name', status: 'finished' } }
+
+        before do
+          filters_class.filter_by :status
+        end
+
+        it 'applies both parent and child filters' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents not matching all filters' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+      end
+
+      context 'when child class overrides parent filter' do
+        let(:filters) { { name: 'test' } }
+
+        before do
+          filters_class.filter_by :name, match: :like
+        end
+
+        it 'uses the child class filter configuration' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not use the parent class filter configuration' do
+          result = filter_instance.apply(scope)
+          expect(result.to_sql).to include('LIKE')
+          expect(result.to_sql).to include("'%test%'")
+        end
+      end
+    end
   end
 end
