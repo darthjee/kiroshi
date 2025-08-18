@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Kiroshi::Filters, type: :model do
-  subject(:filter_instance) { filters_class.new(filters) }
   subject(:filters_class) { Class.new(described_class) }
 
+  let(:filter_instance) { filters_class.new(filters) }
   let(:scope)           { Document.all }
   let(:filters)         { {} }
 
@@ -92,7 +92,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
     end
 
     context 'when scope has joined tables with clashing fields' do
-      let(:scope) { Document.joins(:tags) }
+      let(:scope)   { Document.joins(:tags) }
       let(:filters) { { name: 'test_name' } }
 
       let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }

@@ -37,7 +37,7 @@ module Kiroshi
   # @since 0.1.0
   class Filters
     autoload :ClassMethods, 'kiroshi/filters/class_methods'
-    
+
     extend ClassMethods
 
     # Creates a new Filters instance
