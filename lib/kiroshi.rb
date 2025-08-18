@@ -26,6 +26,7 @@
 #   # Generates: WHERE name LIKE '%report%' AND status = 'published'
 #
 # @example Controller integration
+#   # URL: /articles?filter[title]=ruby&filter[author]=john&filter[category]=tech
 #   class ArticlesController < ApplicationController
 #     def index
 #       @articles = article_filters.apply(Article.published)
@@ -92,6 +93,7 @@
 #   # Only status filter is applied, name is ignored due to empty value
 #
 # @example Chaining with existing scopes
+#   # URL: /orders?filter[status]=completed&filter[customer_name]=john
 #   class OrderFilters < Kiroshi::Filters
 #     filter_by :customer_name, match: :like
 #     filter_by :status
@@ -104,6 +106,7 @@
 #   filtered_orders = filters.apply(recent_orders)
 #
 # @example Complex controller with pagination
+#   # URL: /products?filter[name]=laptop&filter[category]=electronics&filter[in_stock]=true&page=2
 #   class ProductsController < ApplicationController
 #     def index
 #       @products = filtered_products.page(params[:page])
