@@ -91,6 +91,11 @@ module Kiroshi
     #   filter.apply(Document.joins(:tags), { name: 'report' })
     #   # Generates: WHERE documents.name = 'report'
     #
+    # @example Applying a filter with table qualification for tags
+    #   filter = Kiroshi::Filter.new(:name, table: 'tags')
+    #   filter.apply(Document.joins(:tags), { name: 'ruby' })
+    #   # Generates: WHERE tags.name = 'ruby'
+    #
     # @example With empty filter value
     #   filter = Kiroshi::Filter.new(:name)
     #   filter.apply(User.all, { name: nil })
