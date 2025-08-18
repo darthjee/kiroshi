@@ -6,11 +6,10 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
   describe '#apply' do
     subject(:query) { described_class.new(filter_runner) }
 
-    let(:filter_runner) { Kiroshi::FilterRunner.new(filter: filter, scope: scope, filters: filters) }
+    let(:filter_runner) { Kiroshi::FilterRunner.new(filter: filter, scope: scope, value: filter_value) }
     let(:filter)        { Kiroshi::Filter.new(:name, match: :like) }
     let(:scope)         { Document.all }
     let(:filter_value)  { 'test' }
-    let(:filters)       { { name: filter_value } }
 
     let!(:matching_document)     { create(:document, name: 'test_document') }
     let!(:another_match)         { create(:document, name: 'my_test_file') }
@@ -41,7 +40,6 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     context 'when filtering by status attribute' do
       let(:filter)        { Kiroshi::Filter.new(:status, match: :like) }
       let(:filter_value)  { 'pub' }
-      let(:filters)       { { status: filter_value } }
 
       let!(:published_document)     { create(:document, status: 'published') }
       let!(:republished_document)   { create(:document, status: 'republished') }
@@ -73,7 +71,6 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     context 'when filtering with numeric values as strings' do
       let(:filter)        { Kiroshi::Filter.new(:version, match: :like) }
       let(:filter_value)  { '1.2' }
-      let(:filters)       { { version: filter_value } }
 
       let!(:version_match)     { create(:document, version: '1.2.3') }
       let!(:another_version)   { create(:document, version: '2.1.2') }
@@ -190,7 +187,6 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     context 'when filter has table configured' do
       let(:scope) { Document.joins(:tags) }
       let(:filter_value) { 'ruby' }
-      let(:filters)      { { name: filter_value } }
 
       let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
       let!(:second_tag) { Tag.find_or_create_by(name: 'ruby_on_rails') }

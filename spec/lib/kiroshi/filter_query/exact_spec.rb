@@ -6,11 +6,10 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
   describe '#apply' do
     subject(:query) { described_class.new(filter_runner) }
 
-    let(:filter_runner) { Kiroshi::FilterRunner.new(filter: filter, scope: scope, filters: filters) }
+    let(:filter_runner) { Kiroshi::FilterRunner.new(filter: filter, scope: scope, value: filter_value) }
     let(:filter)        { Kiroshi::Filter.new(:name, match: :exact) }
     let(:scope)         { Document.all }
     let(:filter_value)  { 'test_document' }
-    let(:filters)       { { name: filter_value } }
 
     let!(:matching_document)     { create(:document, name: 'test_document') }
     let!(:non_matching_document) { create(:document, name: 'other_document') }
@@ -36,7 +35,6 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
     context 'when filtering by status attribute' do
       let(:filter)        { Kiroshi::Filter.new(:status, match: :exact) }
       let(:filter_value)  { 'published' }
-      let(:filters)       { { status: filter_value } }
 
       let!(:published_document) { create(:document, status: 'published') }
       let!(:draft_document)     { create(:document, status: 'draft') }
@@ -63,7 +61,6 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
     context 'when filtering with numeric values' do
       let(:filter)        { Kiroshi::Filter.new(:priority, match: :exact) }
       let(:filter_value)  { 1 }
-      let(:filters)       { { priority: filter_value } }
 
       let!(:high_priority_document)   { create(:document, priority: 1) }
       let!(:medium_priority_document) { create(:document, priority: 2) }
@@ -90,7 +87,6 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
     context 'when filtering with boolean values' do
       let(:filter)        { Kiroshi::Filter.new(:active, match: :exact) }
       let(:filter_value)  { true }
-      let(:filters)       { { active: filter_value } }
 
       let!(:active_document)   { create(:document, active: true) }
       let!(:inactive_document) { create(:document, active: false) }
@@ -154,7 +150,6 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
     context 'when filter has table configured' do
       let(:scope) { Document.joins(:tags) }
       let(:filter_value) { 'ruby' }
-      let(:filters)      { { name: filter_value } }
 
       let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
       let!(:second_tag)  { Tag.find_or_create_by(name: 'javascript') }
@@ -252,7 +247,6 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       context 'when filtering by different attributes with table qualification' do
         let(:filter)       { Kiroshi::Filter.new(:id, match: :exact, table: :tags) }
         let(:filter_value) { first_tag.id }
-        let(:filters)      { { id: filter_value } }
 
         let(:expected_sql) do
           <<~SQL.squish
