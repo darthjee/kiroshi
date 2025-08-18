@@ -147,6 +147,61 @@ def article_filters
 end
 ```
 
+##### Joined Tables and Table Qualification
+
+When working with joined tables that have columns with the same name, you can specify which table to filter on using the `table` parameter:
+
+```ruby
+class DocumentFilters < Kiroshi::Filters
+  filter_by :name, match: :like                    # Filters by documents.name (default table)
+  filter_by :tag_name, match: :like, table: :tags  # Filters by tags.name
+  filter_by :status                                # Filters by documents.status
+  filter_by :category, table: :documents           # Explicitly filter by documents.category
+end
+
+# Example with joined scope
+scope = Document.joins(:tags)
+filters = DocumentFilters.new(tag_name: 'ruby', status: 'published')
+filtered_documents = filters.apply(scope)
+# Generates: WHERE tags.name LIKE '%ruby%' AND documents.status = 'published'
+```
+
+###### Table Qualification Examples
+
+```ruby
+# Filter documents by tag name and document status
+class DocumentTagFilters < Kiroshi::Filters
+  filter_by :tag_name, match: :like, table: :tags  # Search in tags.name
+  filter_by :status, table: :documents             # Search in documents.status
+  filter_by :title, match: :like                   # Search in documents.title (default table)
+end
+
+scope = Document.joins(:tags)
+filters = DocumentTagFilters.new(tag_name: 'programming', status: 'published', title: 'Ruby')
+result = filters.apply(scope)
+# Generates: WHERE tags.name LIKE '%programming%' AND documents.status = 'published' AND documents.title LIKE '%Ruby%'
+
+# Filter by both document and tag attributes with different field names
+class AdvancedDocumentFilters < Kiroshi::Filters
+  filter_by :title, match: :like, table: :documents
+  filter_by :tag_name, match: :like, table: :tags
+  filter_by :category, table: :documents
+  filter_by :tag_color, table: :tags
+end
+
+scope = Document.joins(:tags)
+filters = AdvancedDocumentFilters.new(
+  title: 'Ruby', 
+  tag_name: 'tutorial', 
+  category: 'programming',
+  tag_color: 'blue'
+)
+result = filters.apply(scope)
+# Generates: WHERE documents.title LIKE '%Ruby%' AND tags.name LIKE '%tutorial%' AND documents.category = 'programming' AND tags.color = 'blue'
+```
+
+The `table` parameter accepts both symbols and strings, and helps resolve column name ambiguity in complex joined queries.
+
 ### Kiroshi::Filter
 
 [Filter](https://www.rubydoc.info/gems/kiroshi/Kiroshi/Filter)
@@ -170,6 +225,7 @@ scope = status_filter.apply(scope, { status: 'published' })
 
 - `match: :exact` - Performs exact matching (default)
 - `match: :like` - Performs partial matching using SQL LIKE
+- `table: :table_name` - Specifies which table to filter on (useful for joined queries)
 
 ```ruby
 # Exact match filter
@@ -181,6 +237,16 @@ exact_filter.apply(Document.all, { status: 'published' })
 like_filter = Kiroshi::Filter.new(:title, match: :like)
 like_filter.apply(Document.all, { title: 'Ruby' })
 # Generates: WHERE title LIKE '%Ruby%'
+
+# Table-qualified filter for joined queries
+tag_filter = Kiroshi::Filter.new(:name, match: :like, table: :tags)
+tag_filter.apply(Document.joins(:tags), { name: 'programming' })
+# Generates: WHERE tags.name LIKE '%programming%'
+
+# Document-specific filter in joined query
+doc_filter = Kiroshi::Filter.new(:title, match: :exact, table: :documents)
+doc_filter.apply(Document.joins(:tags), { title: 'Ruby Guide' })
+# Generates: WHERE documents.title = 'Ruby Guide'
 ```
 
 #### Empty Value Handling
@@ -194,3 +260,24 @@ filter.apply(Document.all, { name: '' })         # Returns original scope
 filter.apply(Document.all, {})                   # Returns original scope
 filter.apply(Document.all, { name: 'value' })    # Applies filter
 ```
+
+#### Handling Column Name Ambiguity
+
+When working with joined tables that have columns with the same name, use the `table` parameter to specify which table's column to filter:
+
+```ruby
+# Without table specification - may cause ambiguity
+scope = Document.joins(:tags)  # Both documents and tags have 'name' column
+
+# Specify which table to filter on
+name_filter = Kiroshi::Filter.new(:name, match: :like, table: :tags)
+result = name_filter.apply(scope, { name: 'ruby' })
+# Generates: WHERE tags.name LIKE '%ruby%'
+
+# Or filter by document name specifically
+doc_name_filter = Kiroshi::Filter.new(:name, match: :like, table: :documents)
+result = doc_name_filter.apply(scope, { name: 'guide' })
+# Generates: WHERE documents.name LIKE '%guide%'
+```
+
+**Priority**: When using `Kiroshi::Filters`, if a filter specifies a `table`, it takes priority over the scope's default table name.

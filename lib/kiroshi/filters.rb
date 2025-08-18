@@ -49,6 +49,7 @@ module Kiroshi
       #   @option options [Symbol] :match (:exact) the matching type
       #     - +:exact+ for exact matching (default)
       #     - +:like+ for partial matching using SQL LIKE
+      #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the attribute
       #
       # @return [Filter] the new filter instance
       #
@@ -69,6 +70,11 @@ module Kiroshi
       #     filter_by :customer_name, match: :like
       #     filter_by :status, match: :exact
       #     filter_by :payment_method
+      #   end
+      #
+      # @example Filter with table qualification
+      #   class DocumentTagFilters < Kiroshi::Filters
+      #     filter_by :name, table: :tags
       #   end
       #
       # @since 0.1.0
