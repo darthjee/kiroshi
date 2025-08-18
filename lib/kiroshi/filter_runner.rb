@@ -67,21 +67,19 @@ module Kiroshi
       query_strategy.apply
     end
 
-    # Returns the filter value for the current filter
-    #
-    # @return [Object, nil] the filter value or nil if not present
-    #
-    # @since 0.1.1
-    def value
-      @value
-    end
-
     # Returns the current scope being filtered
     #
     # @return [ActiveRecord::Relation] the scope
     #
     # @since 0.1.1
     attr_reader :scope
+
+    # Returns the filter value for the current filter
+    #
+    # @return [Object, nil] the filter value or nil if not present
+    #
+    # @since 0.1.1
+    attr_reader :value
 
     # Returns the table name to use for the filter
     #
@@ -112,6 +110,13 @@ module Kiroshi
     #   Returns the current scope being filtered
     #
     #   @return [ActiveRecord::Relation] the scope
+
+    # @!method value
+    #   @api private
+    #
+    #   Returns the filter value for the current filter
+    #
+    #   @return [Object, nil] the filter value or nil if not present
 
     private
 
