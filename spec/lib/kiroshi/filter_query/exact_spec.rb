@@ -67,7 +67,7 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       it 'generates correct SQL for numeric filtering' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE \"documents\".\"priority\" = 1"
+        expected_sql = 'SELECT "documents".* FROM "documents" WHERE "documents"."priority" = 1'
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -89,7 +89,7 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       it 'generates correct SQL for boolean filtering' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE \"documents\".\"active\" = 1"
+        expected_sql = 'SELECT "documents".* FROM "documents" WHERE "documents"."active" = 1'
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -108,7 +108,7 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
     end
 
     context 'with case sensitivity' do
-      let(:filter_value)  { 'Test_Document' }
+      let(:filter_value)        { 'Test_Document' }
       let!(:lowercase_document) { create(:document, name: 'test_document') }
       let!(:uppercase_document) { create(:document, name: 'TEST_DOCUMENT') }
       let!(:mixedcase_document) { create(:document, name: 'Test_Document') }
@@ -117,8 +117,11 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
         expect(query.apply).to include(mixedcase_document)
       end
 
-      it 'excludes documents with different case' do
+      it 'excludes documents with lowercase' do
         expect(query.apply).not_to include(lowercase_document)
+      end
+
+      it 'excludes documents with upcase' do
         expect(query.apply).not_to include(uppercase_document)
       end
     end
