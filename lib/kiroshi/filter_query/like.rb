@@ -2,6 +2,7 @@
 
 module Kiroshi
   class FilterQuery
+    # @api private
     # @author darthjee
     #
     # Query strategy for LIKE matching

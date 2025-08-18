@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Kiroshi
+  # @api private
   # @author darthjee
   #
   # Factory class for creating filter query strategies
