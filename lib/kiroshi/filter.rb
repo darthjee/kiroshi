@@ -16,6 +16,10 @@ module Kiroshi
   #   filter = Kiroshi::Filter.new(:title, match: :like)
   #   filtered_scope = filter.apply(scope: Article.all, filters: { title: 'Ruby' })
   #
+  # @example Creating and applying a filter with specific value
+  #   filter = Kiroshi::Filter.new(:status)
+  #   filtered_scope = filter.apply(scope: Document.all, filters: {}, value: 'published')
+  #
   # @since 0.1.0
   class Filter
     attr_reader :attribute, :match, :table_name
@@ -73,6 +77,7 @@ module Kiroshi
     #
     # @param scope [ActiveRecord::Relation] the ActiveRecord scope to filter
     # @param filters [Hash] a hash containing filter values
+    # @param value [Object, nil] a specific value to use for filtering, defaults to nil
     #
     # @return [ActiveRecord::Relation] the filtered scope
     #
@@ -85,6 +90,11 @@ module Kiroshi
     #   filter = Kiroshi::Filter.new(:title, match: :like)
     #   filter.apply(scope: Article.all, filters: { title: 'Ruby' })
     #   # Generates: WHERE title LIKE '%Ruby%'
+    #
+    # @example Applying a filter with specific value
+    #   filter = Kiroshi::Filter.new(:status)
+    #   filter.apply(scope: Document.all, filters: {}, value: 'published')
+    #   # Generates: WHERE status = 'published'
     #
     # @example Applying a filter with table qualification
     #   filter = Kiroshi::Filter.new(:name, table: 'documents')
@@ -102,8 +112,8 @@ module Kiroshi
     #   # Returns the original scope unchanged
     #
     # @since 0.1.0
-    def apply(scope:, filters:)
-      runner = FilterRunner.new(filter: self, scope: scope, filters: filters)
+    def apply(scope:, filters:, value: nil)
+      runner = FilterRunner.new(filter: self, scope: scope, filters: filters, value: value)
       runner.apply
     end
   end
