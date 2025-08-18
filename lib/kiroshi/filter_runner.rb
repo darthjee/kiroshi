@@ -32,7 +32,7 @@ module Kiroshi
     def initialize(filter:, scope:, value: nil)
       @filter = filter
       @scope = scope
-      @filter_value = value
+      @value = value
     end
 
     # Applies the filter logic to the scope
@@ -73,7 +73,7 @@ module Kiroshi
     #
     # @since 0.1.1
     def value
-      @filter_value
+      @value
     end
 
     # Returns the current scope being filtered
