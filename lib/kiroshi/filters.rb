@@ -99,7 +99,7 @@ module Kiroshi
       #   MyFilters.filter_configs[:name].attribute # => :name
       #   MyFilters.filter_configs[:status].match # => :like
       #
-      # @since 0.1.0
+      # @since 0.1.2
       def filter_configs
         @filter_configs ||= {}
       end
