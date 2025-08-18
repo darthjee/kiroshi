@@ -84,6 +84,7 @@ module Kiroshi
         end
       end
 
+      # @ api private
       # Returns the hash of configured filters for this class
       #
       # @return [Hash<Symbol, Filter>] hash of {Filter} instances configured
