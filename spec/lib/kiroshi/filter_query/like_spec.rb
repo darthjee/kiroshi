@@ -47,6 +47,12 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       let!(:republished_document)   { create(:document, status: 'republished') }
       let!(:draft_document)         { create(:document, status: 'draft') }
 
+      let(:expected_sql) do
+        <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE (documents.status LIKE '%pub%')
+        SQL
+      end
+
       it 'returns documents with partial status match' do
         expect(query.apply).to include(published_document)
       end
@@ -60,9 +66,6 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       end
 
       it 'generates correct SQL for status filtering' do
-        expected_sql = <<~SQL.squish
-          SELECT "documents".* FROM "documents" WHERE (documents.status LIKE '%pub%')
-        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -75,6 +78,12 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       let!(:version_match)     { create(:document, version: '1.2.3') }
       let!(:another_version)   { create(:document, version: '2.1.2') }
       let!(:different_version) { create(:document, version: '3.0.0') }
+
+      let(:expected_sql) do
+        <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE (documents.version LIKE '%1.2%')
+        SQL
+      end
 
       it 'returns documents with partial numeric match' do
         expect(query.apply).to include(version_match)
@@ -89,9 +98,6 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       end
 
       it 'generates correct SQL for numeric string filtering' do
-        expected_sql = <<~SQL.squish
-          SELECT "documents".* FROM "documents" WHERE (documents.version LIKE '%1.2%')
-        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -99,14 +105,17 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     context 'when no records match' do
       let(:filter_value) { 'nonexistent' }
 
+      let(:expected_sql) do
+        <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE (documents.name LIKE '%nonexistent%')
+        SQL
+      end
+
       it 'returns empty relation' do
         expect(query.apply).to be_empty
       end
 
       it 'still generates valid SQL' do
-        expected_sql = <<~SQL.squish
-          SELECT "documents".* FROM "documents" WHERE (documents.name LIKE '%nonexistent%')
-        SQL
         expect(query.apply.to_sql).to eq(expected_sql)
       end
     end
