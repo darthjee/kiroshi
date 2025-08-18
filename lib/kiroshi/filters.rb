@@ -159,8 +159,9 @@ module Kiroshi
     # @since 0.1.2
     def apply(scope)
       filters.compact.each do |attribute, value|
-        filter = self.class.filter_configs[attribute]
+        filter = self.class.filter_for(attribute)
         next unless filter
+
         scope = filter.apply(scope: scope, value: value)
       end
 
