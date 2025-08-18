@@ -47,55 +47,11 @@ module Kiroshi
       #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the attribute
       #     when dealing with joined tables that have conflicting column names
       #
-      # @return [Filter] the new filter instance that was created and registered
-      #
-      # @example Defining exact match filters
-      #   class ProductFilters < Kiroshi::Filters
-      #     filter_by :category      # Exact match on category
-      #     filter_by :brand         # Exact match on brand
-      #     filter_by :active        # Exact match on active status
-      #   end
-      #
-      # @example Defining partial match filters
-      #   class SearchFilters < Kiroshi::Filters
-      #     filter_by :title, match: :like         # Partial match on title
-      #     filter_by :description, match: :like   # Partial match on description
-      #     filter_by :author_name, match: :like   # Partial match on author name
-      #   end
-      #
-      # @example Mixed filter types with different matching strategies
-      #   class OrderFilters < Kiroshi::Filters
-      #     filter_by :customer_name, match: :like  # Partial match for customer search
-      #     filter_by :status, match: :exact        # Exact match for order status
-      #     filter_by :payment_method               # Exact match (default) for payment
-      #   end
-      #
-      # @example Filters with table qualification for joined queries
-      #   class DocumentTagFilters < Kiroshi::Filters
-      #     filter_by :name, table: :documents      # Filter by document name
-      #     filter_by :tag_name, table: :tags       # Filter by tag name
-      #     filter_by :category, table: :categories # Filter by category name
-      #   end
-      #
-      # @example Complex real-world filter class
-      #   class ProductSearchFilters < Kiroshi::Filters
-      #     filter_by :name, match: :like                    # Product name search
-      #     filter_by :category_id                           # Exact category match
-      #     filter_by :brand, match: :like                   # Brand name search
-      #     filter_by :price_min                             # Minimum price
-      #     filter_by :price_max                             # Maximum price
-      #     filter_by :in_stock                              # Availability filter
-      #     filter_by :category_name, table: :categories     # Category name via join
-      #   end
-      #
-      # @note When using table qualification, ensure that the specified table
-      #   is properly joined in the scope being filtered. The filter will not
-      #   automatically add joins - it only qualifies the column name.
-      #
-      # @see Filter#initialize for detailed information about filter options
-      # @see Filters#apply for how these filters are used during query execution
-      #
-      # @since 0.1.0
+      # @return (see Filters.filter_by)
+      # @example (see Filters.filter_by)
+      # @note (see Filters.filter_by)
+      # @see (see Filters.filter_by)
+      # @since (see Filters.filter_by)
       def filter_by(attribute, **)
         Filter.new(attribute, **).tap do |filter|
           filter_configs[attribute] = filter
