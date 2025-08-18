@@ -170,15 +170,15 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     context 'when filter has table configured' do
       let(:scope) { Document.joins(:tags) }
       let(:filter_value) { 'ruby' }
-      let(:filters) { { name: filter_value } }
+      let(:filters)      { { name: filter_value } }
 
       let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
       let!(:second_tag) { Tag.find_or_create_by(name: 'programming') }
-      let!(:third_tag) { Tag.find_or_create_by(name: 'ruby_on_rails') }
+      let!(:third_tag)  { Tag.find_or_create_by(name: 'ruby_on_rails') }
 
       let!(:document_with_ruby_tag) { create(:document, name: 'My Document') }
       let!(:document_with_rails_tag) { create(:document, name: 'Rails Guide') }
-      let!(:document_without_tag) { create(:document, name: 'Other Document') }
+      let!(:document_without_tag)    { create(:document, name: 'Other Document') }
 
       before do
         document_with_ruby_tag.tags << [first_tag]
@@ -212,7 +212,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       end
 
       context 'when filtering by documents table explicitly' do
-        let(:filter) { Kiroshi::Filter.new(:name, match: :like, table: :documents) }
+        let(:filter)       { Kiroshi::Filter.new(:name, match: :like, table: :documents) }
         let(:filter_value) { 'Guide' }
 
         it 'returns documents that partially match the filter value in document name' do

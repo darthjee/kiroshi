@@ -129,11 +129,11 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
     context 'when filter has table configured' do
       let(:scope) { Document.joins(:tags) }
       let(:filter_value) { 'ruby' }
-      let(:filters) { { name: filter_value } }
+      let(:filters)      { { name: filter_value } }
 
       let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
       let!(:second_tag) { Tag.find_or_create_by(name: 'programming') }
-      let!(:third_tag) { Tag.find_or_create_by(name: 'javascript') }
+      let!(:third_tag)  { Tag.find_or_create_by(name: 'javascript') }
 
       let!(:document_with_ruby_tag) { create(:document, name: 'My Document') }
       let!(:document_with_js_tag) { create(:document, name: 'JS Guide') }
@@ -166,7 +166,7 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       context 'when filtering by documents table explicitly' do
-        let(:filter) { Kiroshi::Filter.new(:name, match: :exact, table: :documents) }
+        let(:filter)       { Kiroshi::Filter.new(:name, match: :exact, table: :documents) }
         let(:filter_value) { 'JS Guide' }
 
         it 'returns documents that exactly match the filter value in document name' do
@@ -201,9 +201,9 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
       end
 
       context 'when filtering by different attributes with table qualification' do
-        let(:filter) { Kiroshi::Filter.new(:id, match: :exact, table: :tags) }
+        let(:filter)       { Kiroshi::Filter.new(:id, match: :exact, table: :tags) }
         let(:filter_value) { first_tag.id }
-        let(:filters) { { id: filter_value } }
+        let(:filters)      { { id: filter_value } }
 
         it 'returns documents with tags that match the tag id' do
           expect(query.apply).to include(document_with_ruby_tag)
