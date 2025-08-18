@@ -80,14 +80,14 @@ module Kiroshi
       # @since 0.1.0
       def filter_by(attribute, **)
         Filter.new(attribute, **).tap do |filter|
-          filter_configs << filter
+          filter_configs[attribute] = filter
         end
       end
 
-      # Returns the list of configured filters for this class
+      # Returns the hash of configured filters for this class
       #
-      # @return [Array<Filter>] array of {Filter} instances configured
-      #   for this filter class
+      # @return [Hash<Symbol, Filter>] hash of {Filter} instances configured
+      #   for this filter class, keyed by attribute name
       #
       # @example Accessing configured filters
       #   class MyFilters < Kiroshi::Filters
@@ -96,11 +96,12 @@ module Kiroshi
       #   end
       #
       #   MyFilters.filter_configs.length # => 2
-      #   MyFilters.filter_configs.first.attribute # => :name
+      #   MyFilters.filter_configs[:name].attribute # => :name
+      #   MyFilters.filter_configs[:status].match # => :like
       #
       # @since 0.1.0
       def filter_configs
-        @filter_configs ||= []
+        @filter_configs ||= {}
       end
     end
 
@@ -162,7 +163,7 @@ module Kiroshi
     #
     # @since 0.1.0
     def apply(scope)
-      self.class.filter_configs.each do |filter|
+      self.class.filter_configs.each_value do |filter|
         scope = filter.apply(scope, filters)
       end
 

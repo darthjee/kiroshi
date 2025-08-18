@@ -128,7 +128,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
         let(:filters) { { name: 'test' } }
 
         before do
-          filters_class.instance_variable_set(:@filter_configs, [])
+          filters_class.instance_variable_set(:@filter_configs, {})
           filters_class.filter_by :name, match: :like
         end
 
