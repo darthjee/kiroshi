@@ -105,7 +105,7 @@ module Kiroshi
     #   filter.apply(scope: User.all, value: nil)
     #   # Returns the original scope unchanged
     #
-    # @since 0.1.0
+    # @since 0.1.2
     def apply(scope:, value: nil)
       runner = FilterRunner.new(filter: self, scope: scope, value: value)
       runner.apply
