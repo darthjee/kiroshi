@@ -193,16 +193,16 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
       let(:filters)      { { name: filter_value } }
 
       let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
-      let!(:second_tag) { Tag.find_or_create_by(name: 'programming') }
-      let!(:third_tag)  { Tag.find_or_create_by(name: 'ruby_on_rails') }
+      let!(:second_tag) { Tag.find_or_create_by(name: 'ruby_on_rails') }
 
       let!(:document_with_ruby_tag) { create(:document, name: 'My Document') }
       let!(:document_with_rails_tag) { create(:document, name: 'Rails Guide') }
       let!(:document_without_tag)    { create(:document, name: 'Other Document') }
 
       before do
+        Tag.find_or_create_by(name: 'programming')
         document_with_ruby_tag.tags << [first_tag]
-        document_with_rails_tag.tags << [third_tag]
+        document_with_rails_tag.tags << [second_tag]
       end
 
       context 'when filtering by tags table' do
