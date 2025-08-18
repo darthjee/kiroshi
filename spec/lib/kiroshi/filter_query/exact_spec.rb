@@ -125,5 +125,99 @@ RSpec.describe Kiroshi::FilterQuery::Exact, type: :model do
         expect(query.apply).not_to include(uppercase_document)
       end
     end
+
+    context 'when filter has table configured' do
+      let(:scope) { Document.joins(:tags) }
+      let(:filter_value) { 'ruby' }
+      let(:filters) { { name: filter_value } }
+
+      let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
+      let!(:second_tag) { Tag.find_or_create_by(name: 'programming') }
+      let!(:third_tag) { Tag.find_or_create_by(name: 'javascript') }
+
+      let!(:document_with_ruby_tag) { create(:document, name: 'My Document') }
+      let!(:document_with_js_tag) { create(:document, name: 'JS Guide') }
+      let!(:document_without_tag) { create(:document, name: 'Other Document') }
+
+      before do
+        document_with_ruby_tag.tags << [first_tag]
+        document_with_js_tag.tags << [third_tag]
+      end
+
+      context 'when filtering by tags table' do
+        let(:filter) { Kiroshi::Filter.new(:name, match: :exact, table: :tags) }
+
+        it 'returns documents with tags that exactly match the filter value' do
+          expect(query.apply).to include(document_with_ruby_tag)
+        end
+
+        it 'does not return documents with tags that do not exactly match' do
+          expect(query.apply).not_to include(document_with_js_tag)
+        end
+
+        it 'does not return documents without matching tags' do
+          expect(query.apply).not_to include(document_without_tag)
+        end
+
+        it 'generates SQL with tags table qualification' do
+          expected_sql = 'SELECT "documents".* FROM "documents" INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" WHERE "tags"."name" = \'ruby\''
+          expect(query.apply.to_sql).to eq(expected_sql)
+        end
+      end
+
+      context 'when filtering by documents table explicitly' do
+        let(:filter) { Kiroshi::Filter.new(:name, match: :exact, table: :documents) }
+        let(:filter_value) { 'JS Guide' }
+
+        it 'returns documents that exactly match the filter value in document name' do
+          expect(query.apply).to include(document_with_js_tag)
+        end
+
+        it 'does not return documents that do not exactly match document name' do
+          expect(query.apply).not_to include(document_with_ruby_tag)
+        end
+
+        it 'does not return documents without exact document name match' do
+          expect(query.apply).not_to include(document_without_tag)
+        end
+
+        it 'generates SQL with documents table qualification' do
+          expected_sql = 'SELECT "documents".* FROM "documents" INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" WHERE "documents"."name" = \'JS Guide\''
+          expect(query.apply.to_sql).to eq(expected_sql)
+        end
+      end
+
+      context 'when table is specified as string' do
+        let(:filter) { Kiroshi::Filter.new(:name, match: :exact, table: 'tags') }
+
+        it 'works the same as with symbol table name' do
+          expect(query.apply).to include(document_with_ruby_tag)
+        end
+
+        it 'generates SQL with string table qualification' do
+          expected_sql = 'SELECT "documents".* FROM "documents" INNER JOIN "documents_tags" ON "documents_tags"."document_id" = "documents"."id" INNER JOIN "tags" ON "tags"."id" = "documents_tags"."tag_id" WHERE "tags"."name" = \'ruby\''
+          expect(query.apply.to_sql).to eq(expected_sql)
+        end
+      end
+
+      context 'when filtering by different attributes with table qualification' do
+        let(:filter) { Kiroshi::Filter.new(:id, match: :exact, table: :tags) }
+        let(:filter_value) { first_tag.id }
+        let(:filters) { { id: filter_value } }
+
+        it 'returns documents with tags that match the tag id' do
+          expect(query.apply).to include(document_with_ruby_tag)
+        end
+
+        it 'does not return documents without the matching tag id' do
+          expect(query.apply).not_to include(document_with_js_tag)
+        end
+
+        it 'generates SQL with tags table qualification for id attribute' do
+          expected_sql = "SELECT \"documents\".* FROM \"documents\" INNER JOIN \"documents_tags\" ON \"documents_tags\".\"document_id\" = \"documents\".\"id\" INNER JOIN \"tags\" ON \"tags\".\"id\" = \"documents_tags\".\"tag_id\" WHERE \"tags\".\"id\" = #{first_tag.id}"
+          expect(query.apply.to_sql).to eq(expected_sql)
+        end
+      end
+    end
   end
 end
