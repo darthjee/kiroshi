@@ -75,6 +75,8 @@ module Kiroshi
     attr_reader :scope
 
     # @!method scope
+    #   @api private
+    #
     #   Returns the current scope being filtered
     #
     #   @return [ActiveRecord::Relation] the scope
@@ -103,11 +105,15 @@ module Kiroshi
     delegate :table_name, to: :scope
 
     # @!method attribute
+    #   @api private
+    #
     #   Returns the attribute name to filter by
     #
     #   @return [Symbol] the attribute name to filter by
 
     # @!method table_name
+    #   @api private
+    #
     #   Returns the table name from the scope
     #
     #   @return [String] the table name
