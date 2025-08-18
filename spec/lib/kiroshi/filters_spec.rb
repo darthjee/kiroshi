@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Kiroshi::Filters, type: :model do
-  describe '#apply' do
-    subject(:filter_instance) { filters_class.new(filters) }
+  subject(:filter_instance) { filters_class.new(filters) }
+  subject(:filters_class) { Class.new(described_class) }
 
-    let(:scope)           { Document.all }
-    let(:filters)         { {} }
+  let(:scope)           { Document.all }
+  let(:filters)         { {} }
+
+  describe '#apply' do
     let!(:document)       { create(:document, name: 'test_name', status: 'finished') }
     let!(:other_document) { create(:document, name: 'other_name', status: 'processing') }
-
-    let(:filters_class) { Class.new(described_class) }
 
     context 'when no filters are configured' do
       context 'when no filters are provided' do
@@ -150,6 +150,20 @@ RSpec.describe Kiroshi::Filters, type: :model do
           result = filter_instance.apply(scope)
           expect(result.to_sql).to include("'%test%'")
         end
+      end
+    end
+  end
+
+  describe '.filter_by' do
+    let(:scope)   { Document.all }
+    let(:filters) { { name: name } }
+    let(:name)    { 'test_name' }
+
+    context 'when adding a new filter' do
+      it do
+        expect { filters_class.filter_by :name }
+        .to change { filter_instance.apply(scope) }
+        .from(scope).to(scope.where(name: name))
       end
     end
   end
