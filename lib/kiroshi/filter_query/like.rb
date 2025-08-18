@@ -32,10 +32,18 @@ module Kiroshi
       #
       # @since 0.1.1
       def apply
+        if respond_to?(:arel_table)
+        scope.where(
+          arel_table[attribute].matches(
+            "%#{value}%"
+          )
+        )
+      else
         scope.where(
           "#{table_name}.#{attribute} LIKE ?",
-          "%#{filter_value}%"
+          "%#{value}%"
         )
+      end
       end
     end
   end

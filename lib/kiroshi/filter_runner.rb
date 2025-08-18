@@ -61,7 +61,7 @@ module Kiroshi
     #
     # @since 0.1.1
     def apply
-      return scope unless filter_value.present?
+      return scope unless value.present?
 
       query_strategy = FilterQuery.for(filter.match).new(self)
       query_strategy.apply
@@ -72,7 +72,7 @@ module Kiroshi
     # @return [Object, nil] the filter value or nil if not present
     #
     # @since 0.1.1
-    def filter_value
+    def value
       @filter_value
     end
 
