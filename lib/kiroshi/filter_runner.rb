@@ -73,11 +73,42 @@ module Kiroshi
     # @since 0.1.1
     attr_reader :scope
 
+    # @!method scope
+    #   Returns the current scope being filtered
+    #
+    #   @return [ActiveRecord::Relation] the scope
+
     private
 
     attr_reader :filter, :filters
 
+    # @!method filter
+    #   @api private
+    #   @private
+    #
+    #   Returns the filter configuration
+    #
+    #   @return [Kiroshi::Filter] the filter configuration
+
+    # @!method filters
+    #   @api private
+    #   @private
+    #
+    #   Returns the hash of filter values
+    #
+    #   @return [Hash] the hash of filter values
+
     delegate :attribute, to: :filter
     delegate :table_name, to: :scope
+
+    # @!method attribute
+    #   Returns the attribute name to filter by
+    #
+    #   @return [Symbol] the attribute name to filter by
+
+    # @!method table_name
+    #   Returns the table name from the scope
+    #
+    #   @return [String] the table name
   end
 end
