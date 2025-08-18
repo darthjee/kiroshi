@@ -43,11 +43,12 @@ module Kiroshi
       # be applied when {#apply} is called. Each call creates a new {Filter}
       # instance with the specified configuration.
       #
-      # @param attribute [Symbol] the attribute name to filter by
-      # @param options [Hash] additional options passed to {Filter#initialize}
-      # @option options [Symbol] :match (:exact) the matching type
-      #   - +:exact+ for exact matching (default)
-      #   - +:like+ for partial matching using SQL LIKE
+      # @overload filter_by(attribute, **options)
+      #   @param attribute [Symbol] the attribute name to filter by
+      #   @param options [Hash] additional options passed to {Filter#initialize}
+      #   @option options [Symbol] :match (:exact) the matching type
+      #     - +:exact+ for exact matching (default)
+      #     - +:like+ for partial matching using SQL LIKE
       #
       # @return [Filter] the new filter instance
       #
