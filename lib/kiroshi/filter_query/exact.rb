@@ -31,11 +31,7 @@ module Kiroshi
       #
       # @since 0.1.1
       def apply
-        if respond_to?(:arel_table)
-          scope.where(arel_table[attribute].eq(value))
-        else
-          scope.where(table_name => { attribute => value })
-        end
+        scope.where(table_name => { attribute => value })
       end
     end
   end
