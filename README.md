@@ -100,6 +100,7 @@ products = filters.apply(Product.all)
 ##### Controller Integration
 
 ```ruby
+# URL: /documents?filter[name]=report&filter[status]=published&filter[author]=john
 class DocumentsController < ApplicationController
   def index
     @documents = document_filters.apply(Document.all)
@@ -113,7 +114,7 @@ class DocumentsController < ApplicationController
   end
 
   def filter_params
-    params.permit(:name, :status, :category, :author)
+    params[:filter]&.permit(:name, :status, :category, :author)
   end
 end
 
@@ -128,6 +129,7 @@ end
 ##### Nested Resource Filtering
 
 ```ruby
+# URL: /users/123/articles?filter[title]=ruby&filter[published]=true&filter[tag]=tutorial
 class ArticleFilters < Kiroshi::Filters
   filter_by :title, match: :like
   filter_by :published
@@ -141,7 +143,7 @@ def articles
 end
 
 def article_filters
-  ArticleFilters.new(params.permit(:title, :published, :tag))
+  ArticleFilters.new(params[:filter]&.permit(:title, :published, :tag))
 end
 ```
 
