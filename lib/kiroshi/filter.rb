@@ -39,13 +39,13 @@ module Kiroshi
     #
     #   Returns the table name to qualify the attribute
     #
-    #   @return [String, nil] the table name or nil if not specified
+    #   @return [String, String, nil] the table name or nil if not specified
 
     # Creates a new Filter instance
     #
     # @param attribute [Symbol] the attribute name to filter by
     # @param match [Symbol] the matching type, defaults to :exact
-    # @param table [String, nil] the table name to qualify the attribute, defaults to nil
+    # @param table [String, Symbol, nil] the table name to qualify the attribute, defaults to nil
     # @option match [Symbol] :exact performs exact matching (default)
     # @option match [Symbol] :like performs partial matching using SQL LIKE
     #
