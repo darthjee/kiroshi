@@ -9,9 +9,10 @@
 # using a declarative DSL. It supports multiple matching strategies and can
 # be easily integrated into Rails controllers and other components.
 #
-# The gem is designed around two main concepts:
+# The gem is designed around the main concept:
 # - {Filters}: A base class for creating reusable filter sets
-# - {Filter}: Individual filters that can be applied to scopes
+#
+# Individual filters are handled internally and don't require direct interaction.
 #
 # @example Basic filter class definition
 #   class DocumentFilters < Kiroshi::Filters
@@ -67,25 +68,6 @@
 #   )
 #   filtered_users = filters.apply(User.includes(:department))
 #   # Generates: WHERE email LIKE '%admin%' AND role = 'moderator' AND active = true
-#
-# @example Individual filter usage
-#   # Create standalone filters
-#   name_filter = Kiroshi::Filter.new(:name, match: :like)
-#   status_filter = Kiroshi::Filter.new(:status)
-#
-#   # Apply filters step by step
-#   scope = Document.all
-#   scope = name_filter.apply(scope: scope, filters: { name: 'annual' })
-#   scope = status_filter.apply(scope: scope, filters: { status: 'published' })
-#
-# @example Filter matching types
-#   # Exact matching (default)
-#   Kiroshi::Filter.new(:status)
-#   # Generates: WHERE status = 'value'
-#
-#   # Partial matching with LIKE
-#   Kiroshi::Filter.new(:title, match: :like)
-#   # Generates: WHERE title LIKE '%value%'
 #
 # @example Empty value handling
 #   filters = DocumentFilters.new(name: '', status: 'published')
@@ -148,7 +130,6 @@
 #   end
 #
 # @see Filters Base class for creating filter sets
-# @see Filter Individual filter implementation
 # @see https://github.com/darthjee/kiroshi GitHub repository
 # @see https://www.rubydoc.info/gems/kiroshi YARD documentation
 #
