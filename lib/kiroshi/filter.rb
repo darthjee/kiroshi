@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Kiroshi
+  # @api private
   # @author darthjee
   #
   # A filter class that applies filtering logic to ActiveRecord scopes
