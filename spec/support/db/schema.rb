@@ -19,6 +19,6 @@ ActiveRecord::Schema.define do
   create_table :documents_tags, force: true do |t|
     t.references :document, null: false, foreign_key: true
     t.references :tag, null: false, foreign_key: true
-    t.index [:document_id, :tag_id], unique: true
+    t.index %i[document_id tag_id], unique: true
   end
 end

@@ -95,13 +95,13 @@ RSpec.describe Kiroshi::Filters, type: :model do
       let(:scope) { Document.joins(:tags) }
       let(:filters) { { name: 'test_name' } }
 
-      let!(:tag1) { Tag.find_or_create_by(name: 'ruby') }
-      let!(:tag2) { Tag.find_or_create_by(name: 'programming') }
+      let!(:first_tag) { Tag.find_or_create_by(name: 'ruby') }
+      let!(:second_tag) { Tag.find_or_create_by(name: 'programming') }
 
       before do
         filters_class.filter_by :name
-        document.tags << [tag1, tag2]
-        other_document.tags << [tag1]
+        document.tags << [first_tag, second_tag]
+        other_document.tags << [first_tag]
       end
 
       it 'filters by document name, not tag name' do
@@ -114,9 +114,13 @@ RSpec.describe Kiroshi::Filters, type: :model do
         expect(result).not_to include(other_document)
       end
 
-      it 'generates SQL that specifies the documents table for name field' do
+      it 'generates SQL that includes documents table qualification for name field' do
         result = filter_instance.apply(scope)
         expect(result.to_sql).to include('"documents"."name"')
+      end
+
+      it 'generates SQL that includes the filter value' do
+        result = filter_instance.apply(scope)
         expect(result.to_sql).to include("'test_name'")
       end
 
@@ -141,6 +145,10 @@ RSpec.describe Kiroshi::Filters, type: :model do
         it 'generates SQL with table-qualified LIKE operation' do
           result = filter_instance.apply(scope)
           expect(result.to_sql).to include('documents.name LIKE')
+        end
+
+        it 'generates SQL with correct LIKE pattern' do
+          result = filter_instance.apply(scope)
           expect(result.to_sql).to include("'%test%'")
         end
       end
