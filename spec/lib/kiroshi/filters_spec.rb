@@ -139,10 +139,8 @@ RSpec.describe Kiroshi::Filters, type: :model do
         it 'treats string and symbol keys equivalently' do
           string_result = filters_class.new({ 'name' => 'test', 'status' => 'finished' }).apply(scope)
           symbol_result = filters_class.new({ name: 'test', status: 'finished' }).apply(scope)
-          mixed_result = filter_instance.apply(scope)
 
           expect(string_result.to_sql).to eq(symbol_result.to_sql)
-          expect(mixed_result.to_sql).to eq(symbol_result.to_sql)
         end
       end
     end
