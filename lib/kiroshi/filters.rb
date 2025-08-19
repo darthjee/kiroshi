@@ -49,6 +49,8 @@ module Kiroshi
     #     - +:like+ for partial matching using SQL LIKE with wildcards
     #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the attribute
     #     when dealing with joined tables that have conflicting column names
+    #   @option options [Symbol, nil] :column (nil) the column name to use in database queries,
+    #     defaults to filter_key if not specified
     #
     #   @return [Filter] the new filter instance that was created and registered
     #
@@ -89,6 +91,13 @@ module Kiroshi
     #       filter_by :price_max                             # Maximum price
     #       filter_by :in_stock                              # Availability filter
     #       filter_by :category_name, table: :categories     # Category name via join
+    #     end
+    #
+    #   @example Using custom column names
+    #     class UserFilters < Kiroshi::Filters
+    #       filter_by :full_name, column: :name, match: :like    # Filter key 'full_name' maps to 'name' column
+    #       filter_by :user_email, column: :email                # Filter key 'user_email' maps to 'email' column
+    #       filter_by :account_status, column: :status           # Filter key 'account_status' maps to 'status' column
     #     end
     #
     #   @note When using table qualification, ensure that the specified table

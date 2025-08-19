@@ -46,14 +46,16 @@ module Kiroshi
       #     - +:like+ for partial matching using SQL LIKE with wildcards
       #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the attribute
       #     when dealing with joined tables that have conflicting column names
+      #   @option options [Symbol, nil] :column (nil) the column name to use in database queries,
+      #     defaults to filter_key if not specified
       #
       # @return (see Filters.filter_by)
       # @example (see Filters.filter_by)
       # @note (see Filters.filter_by)
       # @see (see Filters.filter_by)
       # @since (see Filters.filter_by)
-      def filter_by(filter_key, **)
-        Filter.new(filter_key, **).tap do |filter|
+      def filter_by(filter_key, **options)
+        Filter.new(filter_key, **options).tap do |filter|
           filter_configs[filter_key.to_s] = filter
         end
       end
