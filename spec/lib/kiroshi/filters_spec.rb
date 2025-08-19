@@ -213,6 +213,40 @@ RSpec.describe Kiroshi::Filters, type: :model do
             .to include("'%test%'")
         end
       end
+
+      context 'when child class overrides parent filter with table qualification' do
+        let(:scope)   { Document.joins(:tags) }
+        let(:filters) { { name: 'ruby' } }
+
+        let!(:ruby_tag) { Tag.find_or_create_by(name: 'ruby') }
+        let!(:js_tag)   { Tag.find_or_create_by(name: 'javascript') }
+
+        before do
+          filters_class.filter_by :name, table: :tags
+          
+          document.tags << [ruby_tag]
+          other_document.tags << [js_tag]
+        end
+
+        it 'uses the child class table qualification (tags.name)' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents with different tag names' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+
+        it 'generates SQL that filters by tags.name, not documents.name' do
+          result = filter_instance.apply(scope)
+          expect(result.to_sql).to include('"tags"."name"')
+          expect(result.to_sql).not_to include('"documents"."name"')
+        end
+
+        it 'generates SQL that includes the tag filter value' do
+          result = filter_instance.apply(scope)
+          expect(result.to_sql).to include("'ruby'")
+        end
+      end
     end
   end
 end
