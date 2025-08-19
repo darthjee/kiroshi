@@ -52,7 +52,7 @@ RSpec.describe Kiroshi::Filters::ClassMethods, type: :model do
       it do
         expect { filters_class.filter_by :name, match: :like, table: :documents }
           .to change { filter_instance.apply(scope) }
-          .from(scope).to(scope.where('"documents"."name" LIKE ?', '%test%'))
+          .from(scope).to(scope.where('`documents`.`name` LIKE ?', '%test%'))
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Kiroshi::Filters::ClassMethods, type: :model do
         it do
           expect { filters_class.filter_by :user_name, match: :like, column: :full_name }
             .to change { filter_instance.apply(scope) }
-            .from(scope).to(scope.where('"documents"."full_name" LIKE ?', '%John%'))
+            .from(scope).to(scope.where('`documents`.`full_name` LIKE ?', '%John%'))
         end
       end
 
@@ -95,7 +95,7 @@ RSpec.describe Kiroshi::Filters::ClassMethods, type: :model do
         it do
           expect { filters_class.filter_by :tag_identifier, match: :like, table: :tags, column: :name }
             .to change { filter_instance.apply(scope) }
-            .from(scope).to(scope.where('"tags"."name" LIKE ?', '%rub%'))
+            .from(scope).to(scope.where('`tags`.`name` LIKE ?', '%rub%'))
         end
       end
     end

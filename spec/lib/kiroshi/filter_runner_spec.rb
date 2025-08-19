@@ -39,7 +39,7 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
       end
 
       it 'generates correct SQL with table name prefix' do
-        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (\"documents\".\"name\" LIKE '%test%')"
+        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (`documents`.`name` LIKE '%test%')"
         expect(runner.apply.to_sql).to eq(expected_sql)
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
         end
 
         it 'generates correct LIKE SQL using the column name' do
-          expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (\"documents\".\"full_name\" LIKE '%John%')"
+          expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (`documents`.`full_name` LIKE '%John%')"
           expect(runner.apply.to_sql).to eq(expected_sql)
         end
       end
