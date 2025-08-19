@@ -130,7 +130,7 @@ module Kiroshi
     #
     # @since 0.1.0
     def initialize(filters = {})
-      @filters = filters || {}
+      @filters = filters
     end
 
     # Applies all configured filters to the given scope
@@ -179,14 +179,17 @@ module Kiroshi
 
     private
 
-    attr_reader :filters
-
-    # @!method filters
-    #   @api private
-    #   @private
+    # Returns the hash of filter values to be applied
     #
-    #   Returns the hash of filter values to be applied
+    # Uses lazy initialization to ensure @filters is never nil,
+    # defaulting to an empty hash when no filters were provided.
     #
-    #   @return [Hash] the hash of filter values to be applied
+    # @return [Hash] the hash of filter values to be applied
+    #
+    # @api private
+    # @since 0.3.0
+    def filters
+      @filters ||= {}
+    end
   end
 end
