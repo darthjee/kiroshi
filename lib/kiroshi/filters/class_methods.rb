@@ -91,6 +91,8 @@ module Kiroshi
       private
 
       # @api private
+      # @private
+      #
       # Searches for a filter in the inheritance chain
       #
       # This method looks up the inheritance chain to find a filter configuration
@@ -107,9 +109,9 @@ module Kiroshi
         superclass.filter_for(attribute)
       end
 
-      public
-
       # @api private
+      # @private
+      #
       # Returns the hash of configured filters for this filter class
       #
       # This method provides access to the internal registry of filters
