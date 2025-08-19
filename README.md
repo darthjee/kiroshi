@@ -7,16 +7,16 @@
 
 ## Yard Documentation
 
-[https://www.rubydoc.info/gems/kiroshi/0.2.0](https://www.rubydoc.info/gems/kiroshi/0.2.0)
+[https://www.rubydoc.info/gems/kiroshi/0.3.0](https://www.rubydoc.info/gems/kiroshi/0.3.0)
 
 Kiroshi has been designed to make filtering ActiveRecord queries easier
 by providing a flexible and reusable filtering system. It allows you to
 define filter sets that can be applied to any ActiveRecord scope,
 supporting both exact matches and partial matching using SQL LIKE operations.
 
-Current Release: [0.2.0](https://github.com/darthjee/kiroshi/tree/0.2.0)
+Current Release: [0.3.0](https://github.com/darthjee/kiroshi/tree/0.3.0)
 
-[Next release](https://github.com/darthjee/kiroshi/compare/0.2.0...master)
+[Next release](https://github.com/darthjee/kiroshi/compare/0.3.0...master)
 
 ## Installation
 
@@ -67,6 +67,9 @@ Kiroshi supports two types of matching:
 - `:exact` - Exact match (default)
 - `:like` - Partial match using SQL LIKE
 
+<details>
+<summary>Specifying filter types</summary>
+
 ```ruby
 class UserFilters < Kiroshi::Filters
   filter_by :email, match: :like      # Partial matching
@@ -78,10 +81,14 @@ filters = UserFilters.new(email: 'admin', role: 'moderator')
 filtered_users = filters.apply(User.all)
 # Generates: WHERE email LIKE '%admin%' AND role = 'moderator'
 ```
+</details>
 
 #### Advanced Examples
 
 ##### Multiple Filter Types
+
+<details>
+<summary>Applying only some filters</summary>
 
 ```ruby
 class ProductFilters < Kiroshi::Filters
@@ -96,8 +103,12 @@ filters = ProductFilters.new(name: 'laptop', category: 'electronics')
 products = filters.apply(Product.all)
 # Only name and category filters are applied, price and brand are ignored
 ```
+</details>
 
 ##### Controller Integration
+
+<details>
+<summary>Using filters in Rails controllers</summary>
 
 ```ruby
 # URL: /documents?filter[name]=report&filter[status]=published&filter[author]=john
@@ -125,8 +136,12 @@ class DocumentFilters < Kiroshi::Filters
   filter_by :author, match: :like
 end
 ```
+</details>
 
 ##### Nested Resource Filtering
+
+<details>
+<summary>Filtering nested resources</summary>
 
 ```ruby
 # URL: /users/123/articles?filter[title]=ruby&filter[published]=true&filter[tag]=tutorial
@@ -146,8 +161,12 @@ def article_filters
   ArticleFilters.new(params[:filter]&.permit(:title, :published, :tag))
 end
 ```
+</details>
 
 ##### Joined Tables and Table Qualification
+
+<details>
+<summary>Working with joined tables</summary>
 
 When working with joined tables that have columns with the same name, you can specify which table to filter on using the `table` parameter:
 
@@ -165,8 +184,12 @@ filters = DocumentFilters.new(tag_name: 'ruby', status: 'published')
 filtered_documents = filters.apply(scope)
 # Generates: WHERE tags.name LIKE '%ruby%' AND documents.status = 'published'
 ```
+</details>
 
 ###### Table Qualification Examples
+
+<details>
+<summary>Advanced table qualification scenarios</summary>
 
 ```ruby
 # Filter documents by tag name and document status
@@ -201,9 +224,54 @@ result = filters.apply(scope)
 ```
 
 The `table` parameter accepts both symbols and strings, and helps resolve column name ambiguity in complex joined queries.
+</details>
+
+##### Custom Column Mapping
+
+<details>
+<summary>Using different filter keys from database columns</summary>
+
+Sometimes you may want to use a different filter key name from the database column name. The `column` parameter allows you to specify which database column to query while keeping a descriptive filter key:
+
+```ruby
+class UserFilters < Kiroshi::Filters
+  filter_by :full_name, column: :name, match: :like      # Filter key 'full_name' queries 'name' column
+  filter_by :user_email, column: :email, match: :like    # Filter key 'user_email' queries 'email' column  
+  filter_by :account_status, column: :status             # Filter key 'account_status' queries 'status' column
+end
+
+filters = UserFilters.new(full_name: 'John', user_email: 'admin', account_status: 'active')
+result = filters.apply(User.all)
+# Generates: WHERE name LIKE '%John%' AND email LIKE '%admin%' AND status = 'active'
+```
+</details>
+
+###### Column Mapping with Table Qualification
+
+<details>
+<summary>Combining column mapping with table qualification</summary>
+
+You can combine `column` and `table` parameters for complex scenarios:
+
+```ruby
+class DocumentFilters < Kiroshi::Filters
+  filter_by :author_name, column: :name, table: :users, match: :like  # Filter key 'author_name' queries 'users.name'
+  filter_by :doc_title, column: :title, table: :documents, match: :like  # Filter key 'doc_title' queries 'documents.title'
+  filter_by :tag_label, column: :name, table: :tags, match: :like     # Filter key 'tag_label' queries 'tags.name'
+end
+
+scope = Document.joins(:user, :tags)
+filters = DocumentFilters.new(author_name: 'John', doc_title: 'Ruby', tag_label: 'tutorial')
+result = filters.apply(scope)
+# Generates: WHERE users.name LIKE '%John%' AND documents.title LIKE '%Ruby%' AND tags.name LIKE '%tutorial%'
+```
+
+This feature is particularly useful when:
+- Creating more descriptive filter parameter names for APIs
+- Avoiding naming conflicts between filter keys and existing method names
+- Building user-friendly filter interfaces with intuitive parameter names
+</details>
 
 ## API Reference
 
 Kiroshi provides a simple, clean API focused on the `Kiroshi::Filters` class. Individual filters are handled internally and don't require direct interaction in most use cases.
-
-For detailed API documentation, see the [YARD documentation](https://www.rubydoc.info/gems/kiroshi/0.2.0).

@@ -131,7 +131,6 @@
 #
 # @see Filters Base class for creating filter sets
 # @see https://github.com/darthjee/kiroshi GitHub repository
-# @see https://www.rubydoc.info/gems/kiroshi YARD documentation
 #
 # @since 0.1.0
 module Kiroshi
