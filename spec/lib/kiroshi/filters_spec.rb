@@ -252,7 +252,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
 
       it 'generates SQL that includes documents table qualification for name field' do
         result = filter_instance.apply(scope)
-        expect(result.to_sql).to include('`documents`.`name`')
+        expect(result.to_sql).to include('"documents"."name"')
       end
 
       it 'generates SQL that includes the filter value' do
@@ -312,7 +312,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
 
       it 'generates SQL that filters by tags.name using the column parameter' do
-        expect(filter_instance.apply(scope).to_sql).to include('`tags`.`name`')
+        expect(filter_instance.apply(scope).to_sql).to include('"tags"."name"')
       end
 
       it 'generates SQL that includes the filter value' do
@@ -447,7 +447,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
         end
 
         it 'generates SQL that filters by tags.name, not documents.name' do
-          expect(filter_instance.apply(scope).to_sql).to include('`tags`.`name`')
+          expect(filter_instance.apply(scope).to_sql).to include('"tags"."name"')
         end
 
         it 'generates SQL that does not include documents.name' do
