@@ -202,82 +202,8 @@ result = filters.apply(scope)
 
 The `table` parameter accepts both symbols and strings, and helps resolve column name ambiguity in complex joined queries.
 
-### Kiroshi::Filter
+## API Reference
 
-[Filter](https://www.rubydoc.info/gems/kiroshi/Kiroshi/Filter)
-is the individual filter class that applies filtering logic to ActiveRecord scopes.
-It's automatically used by `Kiroshi::Filters`, but can also be used standalone.
+Kiroshi provides a simple, clean API focused on the `Kiroshi::Filters` class. Individual filters are handled internally and don't require direct interaction in most use cases.
 
-#### Standalone Usage
-
-```ruby
-# Create individual filters
-name_filter = Kiroshi::Filter.new(:name, match: :like)
-status_filter = Kiroshi::Filter.new(:status, match: :exact)
-
-# Apply filters manually
-scope = Document.all
-scope = name_filter.apply(scope, { name: 'report' })
-scope = status_filter.apply(scope, { status: 'published' })
-```
-
-#### Filter Options
-
-- `match: :exact` - Performs exact matching (default)
-- `match: :like` - Performs partial matching using SQL LIKE
-- `table: :table_name` - Specifies which table to filter on (useful for joined queries)
-
-```ruby
-# Exact match filter
-exact_filter = Kiroshi::Filter.new(:status)
-exact_filter.apply(Document.all, { status: 'published' })
-# Generates: WHERE status = 'published'
-
-# LIKE match filter
-like_filter = Kiroshi::Filter.new(:title, match: :like)
-like_filter.apply(Document.all, { title: 'Ruby' })
-# Generates: WHERE title LIKE '%Ruby%'
-
-# Table-qualified filter for joined queries
-tag_filter = Kiroshi::Filter.new(:name, match: :like, table: :tags)
-tag_filter.apply(Document.joins(:tags), { name: 'programming' })
-# Generates: WHERE tags.name LIKE '%programming%'
-
-# Document-specific filter in joined query
-doc_filter = Kiroshi::Filter.new(:title, match: :exact, table: :documents)
-doc_filter.apply(Document.joins(:tags), { title: 'Ruby Guide' })
-# Generates: WHERE documents.title = 'Ruby Guide'
-```
-
-#### Empty Value Handling
-
-Filters automatically ignore empty or nil values:
-
-```ruby
-filter = Kiroshi::Filter.new(:name)
-filter.apply(Document.all, { name: nil })        # Returns original scope
-filter.apply(Document.all, { name: '' })         # Returns original scope  
-filter.apply(Document.all, {})                   # Returns original scope
-filter.apply(Document.all, { name: 'value' })    # Applies filter
-```
-
-#### Handling Column Name Ambiguity
-
-When working with joined tables that have columns with the same name, use the `table` parameter to specify which table's column to filter:
-
-```ruby
-# Without table specification - may cause ambiguity
-scope = Document.joins(:tags)  # Both documents and tags have 'name' column
-
-# Specify which table to filter on
-name_filter = Kiroshi::Filter.new(:name, match: :like, table: :tags)
-result = name_filter.apply(scope, { name: 'ruby' })
-# Generates: WHERE tags.name LIKE '%ruby%'
-
-# Or filter by document name specifically
-doc_name_filter = Kiroshi::Filter.new(:name, match: :like, table: :documents)
-result = doc_name_filter.apply(scope, { name: 'guide' })
-# Generates: WHERE documents.name LIKE '%guide%'
-```
-
-**Priority**: When using `Kiroshi::Filters`, if a filter specifies a `table`, it takes priority over the scope's default table name.
+For detailed API documentation, see the [YARD documentation](https://www.rubydoc.info/gems/kiroshi/0.1.1).

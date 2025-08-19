@@ -24,7 +24,7 @@ module Kiroshi
     #   DocumentFilters.filter_configs.keys # => [:name, :status, :category]
     #   DocumentFilters.filter_configs[:name].match # => :like
     #
-    # @since 0.1.2
+    # @since 0.2.0
     # @author darthjee
     module ClassMethods
       # Defines a filter for the current filter class
@@ -56,6 +56,36 @@ module Kiroshi
         Filter.new(attribute, **).tap do |filter|
           filter_configs[attribute] = filter
         end
+      end
+
+      # @api private
+      # Returns the filter configuration for a specific attribute
+      #
+      # This method provides a convenient way to retrieve a specific filter
+      # by its attribute name. It's a shorthand for accessing the filter_configs
+      # hash directly and is used internally by the filtering system.
+      #
+      # @param attribute [Symbol] the attribute name to look up
+      #
+      # @return [Filter, nil] the filter instance for the given attribute,
+      #   or nil if no filter is configured for that attribute
+      #
+      # @example Retrieving a specific filter
+      #   class MyFilters < Kiroshi::Filters
+      #     filter_by :name, match: :like
+      #     filter_by :status
+      #   end
+      #
+      #   MyFilters.filter_for(:name)    # => #<Kiroshi::Filter:0x... @attribute=:name @match=:like>
+      #   MyFilters.filter_for(:status)  # => #<Kiroshi::Filter:0x... @attribute=:status @match=:exact>
+      #   MyFilters.filter_for(:unknown) # => nil
+      #
+      # @see .filter_configs for accessing the complete filter registry
+      # @see Filters#apply for how this method is used during filtering
+      #
+      # @since 0.2.0
+      def filter_for(attribute)
+        filter_configs[attribute]
       end
 
       # @api private
@@ -107,7 +137,7 @@ module Kiroshi
       # @see .filter_by for adding filters to this configuration
       # @see Filters#apply for how these configurations are used
       #
-      # @since 0.1.2
+      # @since 0.2.0
       def filter_configs
         @filter_configs ||= {}
       end
