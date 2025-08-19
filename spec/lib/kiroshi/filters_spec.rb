@@ -252,7 +252,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
 
       it 'generates SQL that includes documents table qualification for name field' do
         result = filter_instance.apply(scope)
-        expect(result.to_sql).to include('"documents"."name"')
+        expect(result.to_sql).to include('`documents`.`name`')
       end
 
       it 'generates SQL that includes the filter value' do
@@ -279,7 +279,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
 
         it 'generates SQL with table-qualified LIKE operation' do
           result = filter_instance.apply(scope)
-          expect(result.to_sql).to include('"documents"."name" LIKE')
+          expect(result.to_sql).to include('`documents`.`name` LIKE')
         end
 
         it 'generates SQL with correct LIKE pattern' do
@@ -312,7 +312,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
 
       it 'generates SQL that filters by tags.name using the column parameter' do
-        expect(filter_instance.apply(scope).to_sql).to include('"tags"."name"')
+        expect(filter_instance.apply(scope).to_sql).to include('`tags`.`name`')
       end
 
       it 'generates SQL that includes the filter value' do
@@ -336,7 +336,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
         end
 
         it 'generates SQL with LIKE operation on the specified column' do
-          expect(filter_instance.apply(scope).to_sql).to include('"tags"."name" LIKE')
+          expect(filter_instance.apply(scope).to_sql).to include('`tags`.`name` LIKE')
         end
 
         it 'generates SQL with correct LIKE pattern' do
@@ -353,7 +353,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
 
         it 'uses the column name in database queries' do
           result = filter_instance.apply(Document.all)
-          expect(result.to_sql).to include('"documents"."name"')
+          expect(result.to_sql).to include('`documents`.`name`')
         end
 
         it 'does not use the filter key in SQL' do
@@ -447,11 +447,11 @@ RSpec.describe Kiroshi::Filters, type: :model do
         end
 
         it 'generates SQL that filters by tags.name, not documents.name' do
-          expect(filter_instance.apply(scope).to_sql).to include('"tags"."name"')
+          expect(filter_instance.apply(scope).to_sql).to include('`tags`.`name`')
         end
 
         it 'generates SQL that does not include documents.name' do
-          expect(filter_instance.apply(scope).to_sql).not_to include('"documents"."name"')
+          expect(filter_instance.apply(scope).to_sql).not_to include('`documents`.`name`')
         end
 
         it 'generates SQL that includes the tag filter value' do

@@ -17,7 +17,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
     let(:expected_sql) do
       <<~SQL.squish
-        SELECT "documents".* FROM "documents" WHERE ("documents"."name" LIKE '%test%')
+        SELECT "documents".* FROM "documents" WHERE (`documents`.`name` LIKE '%test%')
       SQL
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
       let(:expected_sql) do
         <<~SQL.squish
-          SELECT "documents".* FROM "documents" WHERE ("documents"."status" LIKE '%pub%')
+          SELECT "documents".* FROM "documents" WHERE (`documents`.`status` LIKE '%pub%')
         SQL
       end
 
@@ -78,7 +78,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
       let(:expected_sql) do
         <<~SQL.squish
-          SELECT "documents".* FROM "documents" WHERE ("documents"."version" LIKE '%1.2%')
+          SELECT "documents".* FROM "documents" WHERE (`documents`.`version` LIKE '%1.2%')
         SQL
       end
 
@@ -104,7 +104,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
       let(:expected_sql) do
         <<~SQL.squish
-          SELECT "documents".* FROM "documents" WHERE ("documents"."name" LIKE '%nonexistent%')
+          SELECT "documents".* FROM "documents" WHERE (`documents`.`name` LIKE '%nonexistent%')
         SQL
       end
 
@@ -218,7 +218,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
         it 'generates SQL with tags table qualification' do
           result_sql = query.apply.to_sql
-          expect(result_sql).to include('"tags"."name" LIKE')
+          expect(result_sql).to include('`tags`.`name` LIKE')
         end
 
         it 'generates SQL with correct LIKE pattern for tag name' do
@@ -245,7 +245,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
         it 'generates SQL with documents table qualification' do
           result_sql = query.apply.to_sql
-          expect(result_sql).to include('"documents"."name" LIKE')
+          expect(result_sql).to include('`documents`.`name` LIKE')
         end
 
         it 'generates SQL with correct LIKE pattern for document name' do
@@ -263,7 +263,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
         it 'generates SQL with string table qualification' do
           result_sql = query.apply.to_sql
-          expect(result_sql).to include('"tags"."name" LIKE')
+          expect(result_sql).to include('`tags`.`name` LIKE')
         end
       end
     end
@@ -278,7 +278,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
       let(:expected_sql) do
         <<~SQL.squish
-          SELECT "documents".* FROM "documents" WHERE ("documents"."full_name" LIKE '%John%')
+          SELECT "documents".* FROM "documents" WHERE (`documents`.`full_name` LIKE '%John%')
         SQL
       end
 
@@ -303,7 +303,7 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
 
         let(:expected_sql) do
           <<~SQL.squish
-            SELECT "documents".* FROM "documents" WHERE ("documents"."full_name" LIKE '%John%')
+            SELECT "documents".* FROM "documents" WHERE (`documents`.`full_name` LIKE '%John%')
           SQL
         end
 
