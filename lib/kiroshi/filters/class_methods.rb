@@ -85,7 +85,7 @@ module Kiroshi
       # @see .filter_configs for accessing the complete filter registry
       # @see Filters#apply for how this method is used during filtering
       #
-      # @since 0.2.0
+      # @since 0.3.0
       def filter_for(filter_key)
         filter_key_string = filter_key.to_s
         filter_configs[filter_key_string] || inherited_filter_for(filter_key_string)
@@ -105,7 +105,7 @@ module Kiroshi
       # @param filter_key_string [String] the filter key name to look up
       # @return [Filter, nil] the filter instance from a parent class, or nil if not found
       #
-      # @since 0.2.0
+      # @since 0.3.0
       def inherited_filter_for(filter_key_string)
         return nil unless superclass < Kiroshi::Filters
 

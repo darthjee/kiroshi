@@ -67,7 +67,7 @@ module Kiroshi
     # @example Creating a filter with custom column name
     #   filter = Kiroshi::Filter.new(:user_name, column: :full_name)
     #
-    # @since 0.1.0
+    # @since 0.3.0
     def initialize(filter_key, match: :exact, table: nil, column: nil)
       @filter_key = filter_key
       @match = match

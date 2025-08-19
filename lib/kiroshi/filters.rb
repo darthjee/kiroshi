@@ -107,7 +107,7 @@ module Kiroshi
     #   @see Filter#initialize for detailed information about filter options
     #   @see Filters#apply for how these filters are used during query execution
     #
-    #   @since 0.1.0
+    #   @since 0.3.0
 
     # Creates a new Filters instance
     #
