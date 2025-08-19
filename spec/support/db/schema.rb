@@ -5,6 +5,7 @@ ActiveRecord::Schema.define do
 
   create_table :documents, force: true do |t|
     t.string   :name
+    t.string   :full_name
     t.string   :status
     t.boolean  :active
     t.integer  :priority
