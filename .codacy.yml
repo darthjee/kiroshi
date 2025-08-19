@@ -11,8 +11,3 @@ engines:
           - details
           - summary
       MD041: false  # Allow HTML in headers
-exclude_paths:
-  - 'spec/**/*'
-  - 'coverage/**/*'
-  - 'pkg/**/*'
-  - 'vendor/**/*'
