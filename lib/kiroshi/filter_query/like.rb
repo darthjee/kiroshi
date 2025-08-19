@@ -13,7 +13,7 @@ module Kiroshi
     # @example Applying LIKE match query
     #   query = Kiroshi::FilterQuery::Like.new(filter_runner)
     #   query.apply
-    #   # Generates: WHERE table_name.attribute LIKE '%value%'
+    #   # Generates: WHERE "table_name"."attribute" LIKE '%value%'
     #
     # @since 0.1.1
     class Like < FilterQuery
@@ -28,18 +28,36 @@ module Kiroshi
       # @example Applying LIKE match
       #   query = Like.new(filter_runner)
       #   query.apply
-      #   # Generates: WHERE documents.name LIKE '%ruby%'
+      #   # Generates: WHERE "documents"."name" LIKE '%ruby%'
       #
       # @since 0.1.1
       def apply
-        query = <<~SQL.squish
-          "#{table_name}"."#{attribute}" LIKE ?
-        SQL
-
         scope.where(
-          query,
+          sql_query,
           "%#{value}%"
         )
+      end
+
+      private
+
+      # @api private
+      # @private
+      #
+      # Builds the SQL query string for LIKE matching
+      #
+      # This method constructs the SQL fragment with proper table and column
+      # qualification using double quotes to avoid conflicts with reserved words.
+      #
+      # @return [String] the SQL query fragment for LIKE matching
+      #
+      # @example Generated SQL fragment
+      #   sql_query # => '"documents"."name" LIKE ?'
+      #
+      # @since 0.3.0
+      def sql_query
+        <<~SQL.squish
+          "#{table_name}"."#{attribute}" LIKE ?
+        SQL
       end
     end
   end
