@@ -91,6 +91,62 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
     end
 
+    context 'when filters have string keys' do
+      before do
+        filters_class.filter_by :name, match: :like
+        filters_class.filter_by :status
+      end
+
+      context 'with single string key filter' do
+        let(:filters) { { 'name' => 'test' } }
+
+        it 'returns documents matching the string key filter' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents not matching the string key filter' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+
+        it 'generates SQL with LIKE operation for string key' do
+          expect(filter_instance.apply(scope).to_sql).to include('LIKE')
+        end
+      end
+
+      context 'with multiple string key filters' do
+        let(:filters) { { 'name' => 'test', 'status' => 'finished' } }
+
+        it 'returns documents matching all string key filters' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents not matching all string key filters' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+      end
+
+      context 'with mixed string and symbol keys' do
+        let(:filters) { { 'name' => 'test', status: 'finished' } }
+
+        it 'returns documents matching both string and symbol key filters' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents not matching all mixed key filters' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+
+        it 'treats string and symbol keys equivalently' do
+          string_result = filters_class.new({ 'name' => 'test', 'status' => 'finished' }).apply(scope)
+          symbol_result = filters_class.new({ name: 'test', status: 'finished' }).apply(scope)
+          mixed_result = filter_instance.apply(scope)
+
+          expect(string_result.to_sql).to eq(symbol_result.to_sql)
+          expect(mixed_result.to_sql).to eq(symbol_result.to_sql)
+        end
+      end
+    end
+
     context 'when scope has joined tables with clashing fields' do
       let(:scope)   { Document.joins(:tags) }
       let(:filters) { { name: 'test_name' } }
