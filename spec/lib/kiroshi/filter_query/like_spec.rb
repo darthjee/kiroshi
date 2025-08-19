@@ -269,11 +269,11 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
     end
 
     context 'when Filter#column is different from filter_key' do
-      let(:filter) { Kiroshi::Filter.new(:user_name, match: :like, column: :full_name) }
+      let(:filter)       { Kiroshi::Filter.new(:user_name, match: :like, column: :full_name) }
       let(:filter_value) { 'John' }
 
       let!(:matching_document) { create(:document, full_name: 'John Doe') }
-      let!(:another_match) { create(:document, full_name: 'Johnny Smith') }
+      let!(:another_match)         { create(:document, full_name: 'Johnny Smith') }
       let!(:non_matching_document) { create(:document, full_name: 'Jane Wilson') }
 
       let(:expected_sql) do
