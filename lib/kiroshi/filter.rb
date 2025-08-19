@@ -23,7 +23,7 @@ module Kiroshi
   #
   # @since 0.1.0
   class Filter
-    attr_reader :filter_key, :match, :table_name, :column
+    attr_reader :filter_key, :match, :table_name
 
     # @!method filter_key
     #   @api private
@@ -45,13 +45,6 @@ module Kiroshi
     #   Returns the table name to qualify the attribute
     #
     #   @return [String, String, nil] the table name or nil if not specified
-
-    # @!method column
-    #   @api private
-    #
-    #   Returns the column name to use in database queries
-    #
-    #   @return [Symbol] the column name to use in database queries
 
     # Creates a new Filter instance
     #
@@ -79,12 +72,24 @@ module Kiroshi
       @filter_key = filter_key
       @match = match
       @table_name = table
-      @column = column || filter_key
+      @column = column
     end
 
     # Returns the column name to use in database queries
     #
-    # This method provides backward compatibility by delegating to the column attribute.
+    # Uses lazy initialization - defaults to filter_key if no column was specified.
+    # This allows for flexible column mapping while maintaining backward compatibility.
+    #
+    # @return [Symbol] the column name to use in database queries
+    #
+    # @since 0.3.0
+    def column
+      @column ||= filter_key
+    end
+
+    # Returns the column name to use in database queries
+    #
+    # This method provides backward compatibility by delegating to the column method.
     # The column name is used by the filter query classes to build the WHERE clauses.
     #
     # @return [Symbol] the column name to use in database queries
