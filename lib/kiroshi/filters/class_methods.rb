@@ -54,7 +54,7 @@ module Kiroshi
       # @since (see Filters.filter_by)
       def filter_by(attribute, **)
         Filter.new(attribute, **).tap do |filter|
-          filter_configs[attribute] = filter
+          filter_configs[attribute.to_s] = filter
         end
       end
 
@@ -85,7 +85,8 @@ module Kiroshi
       #
       # @since 0.2.0
       def filter_for(attribute)
-        filter_configs[attribute] || inherited_filter_for(attribute)
+        attribute_key = attribute.to_s
+        filter_configs[attribute_key] || inherited_filter_for(attribute_key)
       end
 
       private
@@ -99,14 +100,14 @@ module Kiroshi
       # for the given attribute. It only searches in superclasses that inherit
       # from Kiroshi::Filters, stopping when it reaches a non-Filters class.
       #
-      # @param attribute [Symbol] the attribute name to look up
+      # @param attribute_key [String] the attribute name to look up
       # @return [Filter, nil] the filter instance from a parent class, or nil if not found
       #
       # @since 0.2.0
-      def inherited_filter_for(attribute)
+      def inherited_filter_for(attribute_key)
         return nil unless superclass < Kiroshi::Filters
 
-        superclass.filter_for(attribute)
+        superclass.filter_for(attribute_key)
       end
 
       # @api private
