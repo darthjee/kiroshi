@@ -90,5 +90,46 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
         expect(runner.apply).not_to include(non_matching_document)
       end
     end
+
+    context 'when Filter#column is different from filter_key' do
+      let(:filter) { Kiroshi::Filter.new(:user_name, match: :exact, column: :full_name) }
+      let(:filter_value) { 'John Doe' }
+
+      let!(:matching_document) { create(:document, full_name: 'John Doe') }
+      let!(:non_matching_document) { create(:document, full_name: 'Jane Smith') }
+
+      it 'filters using the column name instead of filter_key' do
+        expect(runner.apply).to include(matching_document)
+      end
+
+      it 'does not return non-matching records' do
+        expect(runner.apply).not_to include(non_matching_document)
+      end
+
+      it 'generates correct SQL using the column name' do
+        expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE \"documents\".\"full_name\" = 'John Doe'"
+        expect(runner.apply.to_sql).to eq(expected_sql)
+      end
+
+      context 'with LIKE match' do
+        let(:filter) { Kiroshi::Filter.new(:user_name, match: :like, column: :full_name) }
+        let(:filter_value) { 'John' }
+
+        let!(:partial_match) { create(:document, full_name: 'Johnny Smith') }
+
+        it 'performs LIKE filtering using the column name' do
+          expect(runner.apply).to include(matching_document)
+        end
+
+        it 'includes partial matches using the column name' do
+          expect(runner.apply).to include(partial_match)
+        end
+
+        it 'generates correct LIKE SQL using the column name' do
+          expected_sql = "SELECT \"documents\".* FROM \"documents\" WHERE (\"documents\".\"full_name\" LIKE '%John%')"
+          expect(runner.apply.to_sql).to eq(expected_sql)
+        end
+      end
+    end
   end
 end
