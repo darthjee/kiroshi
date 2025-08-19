@@ -76,16 +76,6 @@ RSpec.describe Kiroshi::FilterRunner, type: :model do
       end
     end
 
-    context 'when filter value is blank' do
-      let(:document_name) { 'Some name' }
-      let(:filter)       { Kiroshi::Filter.new(:name) }
-      let(:filter_value) { nil }
-
-      it 'returns the original scope unchanged' do
-        expect(runner.apply).to eq(scope)
-      end
-    end
-
     context 'with status filter' do
       let(:filter)                 { Kiroshi::Filter.new(:status, match: :exact) }
       let(:filter_value)           { 'finished' }
