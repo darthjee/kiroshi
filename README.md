@@ -7,16 +7,16 @@
 
 ## Yard Documentation
 
-[https://www.rubydoc.info/gems/kiroshi/0.2.0](https://www.rubydoc.info/gems/kiroshi/0.2.0)
+[https://www.rubydoc.info/gems/kiroshi/0.3.0](https://www.rubydoc.info/gems/kiroshi/0.3.0)
 
 Kiroshi has been designed to make filtering ActiveRecord queries easier
 by providing a flexible and reusable filtering system. It allows you to
 define filter sets that can be applied to any ActiveRecord scope,
 supporting both exact matches and partial matching using SQL LIKE operations.
 
-Current Release: [0.2.0](https://github.com/darthjee/kiroshi/tree/0.2.0)
+Current Release: [0.3.0](https://github.com/darthjee/kiroshi/tree/0.3.0)
 
-[Next release](https://github.com/darthjee/kiroshi/compare/0.2.0...master)
+[Next release](https://github.com/darthjee/kiroshi/compare/0.3.0...master)
 
 ## Installation
 
@@ -244,4 +244,4 @@ This feature is particularly useful when:
 
 Kiroshi provides a simple, clean API focused on the `Kiroshi::Filters` class. Individual filters are handled internally and don't require direct interaction in most use cases.
 
-For detailed API documentation, see the [YARD documentation](https://www.rubydoc.info/gems/kiroshi/0.2.0).
+For detailed API documentation, see the [YARD documentation](https://www.rubydoc.info/gems/kiroshi/0.3.0).
