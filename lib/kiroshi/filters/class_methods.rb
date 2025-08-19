@@ -21,8 +21,8 @@ module Kiroshi
     #   end
     #
     # @example Accessing filter configurations
-    #   DocumentFilters.filter_configs.keys # => [:name, :status, :category]
-    #   DocumentFilters.filter_configs[:name].match # => :like
+    #   DocumentFilters.filter_configs.keys # => ["name", "status", "category"]
+    #   DocumentFilters.filter_configs["name"].match # => :like
     #
     # @since 0.2.0
     # @author darthjee
@@ -54,7 +54,7 @@ module Kiroshi
       # @since (see Filters.filter_by)
       def filter_by(attribute, **)
         Filter.new(attribute, **).tap do |filter|
-          filter_configs[attribute] = filter
+          filter_configs[attribute.to_s] = filter
         end
       end
 
@@ -65,7 +65,7 @@ module Kiroshi
       # by its attribute name. It's a shorthand for accessing the filter_configs
       # hash directly and is used internally by the filtering system.
       #
-      # @param attribute [Symbol] the attribute name to look up
+      # @param attribute [Symbol, String] the attribute name to look up
       #
       # @return [Filter, nil] the filter instance for the given attribute,
       #   or nil if no filter is configured for that attribute
@@ -85,7 +85,8 @@ module Kiroshi
       #
       # @since 0.2.0
       def filter_for(attribute)
-        filter_configs[attribute] || inherited_filter_for(attribute)
+        attribute_key = attribute.to_s
+        filter_configs[attribute_key] || inherited_filter_for(attribute_key)
       end
 
       private
@@ -99,14 +100,14 @@ module Kiroshi
       # for the given attribute. It only searches in superclasses that inherit
       # from Kiroshi::Filters, stopping when it reaches a non-Filters class.
       #
-      # @param attribute [Symbol] the attribute name to look up
+      # @param attribute_key [String] the attribute name to look up
       # @return [Filter, nil] the filter instance from a parent class, or nil if not found
       #
       # @since 0.2.0
-      def inherited_filter_for(attribute)
+      def inherited_filter_for(attribute_key)
         return nil unless superclass < Kiroshi::Filters
 
-        superclass.filter_for(attribute)
+        superclass.filter_for(attribute_key)
       end
 
       # @api private
@@ -124,7 +125,7 @@ module Kiroshi
       # While marked as private API, it may be useful for introspection
       # and testing purposes.
       #
-      # @return [Hash<Symbol, Filter>] hash of {Filter} instances configured
+      # @return [Hash<String, Filter>] hash of {Filter} instances configured
       #   for this filter class, keyed by attribute name for efficient access
       #
       # @example Accessing configured filters for introspection
@@ -135,17 +136,17 @@ module Kiroshi
       #   end
       #
       #   MyFilters.filter_configs.length                    # => 3
-      #   MyFilters.filter_configs.keys                      # => [:name, :status, :category]
-      #   MyFilters.filter_configs[:name].attribute          # => :name
-      #   MyFilters.filter_configs[:name].match              # => :like
-      #   MyFilters.filter_configs[:status].match            # => :exact
-      #   MyFilters.filter_configs[:category].table_name     # => :categories
+      #   MyFilters.filter_configs.keys                      # => ["name", "status", "category"]
+      #   MyFilters.filter_configs["name"].attribute         # => :name
+      #   MyFilters.filter_configs["name"].match             # => :like
+      #   MyFilters.filter_configs["status"].match           # => :exact
+      #   MyFilters.filter_configs["category"].table_name    # => :categories
       #
       # @example Using in tests to verify filter configuration
       #   RSpec.describe ProductFilters do
       #     it 'configures the expected filters' do
-      #       expect(described_class.filter_configs).to have_key(:name)
-      #       expect(described_class.filter_configs[:name].match).to eq(:like)
+      #       expect(described_class.filter_configs).to have_key("name")
+      #       expect(described_class.filter_configs["name"].match).to eq(:like)
       #     end
       #   end
       #
