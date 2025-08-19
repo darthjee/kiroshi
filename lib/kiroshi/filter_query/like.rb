@@ -32,8 +32,12 @@ module Kiroshi
       #
       # @since 0.1.1
       def apply
+        query = <<~SQL.squish
+          "#{table_name}"."#{attribute}" LIKE ?
+        SQL
+
         scope.where(
-          "\"#{table_name}\".\"#{attribute}\" LIKE ?",
+          query,
           "%#{value}%"
         )
       end
