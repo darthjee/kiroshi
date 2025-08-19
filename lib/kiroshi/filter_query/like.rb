@@ -58,7 +58,7 @@ module Kiroshi
       # @since 0.3.0
       def sql_query
         <<~SQL.squish
-          "#{table_name}"."#{column}" LIKE ?
+          `#{table_name}`.`#{column}` LIKE ?
         SQL
       end
     end
