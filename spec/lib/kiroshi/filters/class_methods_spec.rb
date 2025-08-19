@@ -55,5 +55,49 @@ RSpec.describe Kiroshi::Filters::ClassMethods, type: :model do
           .from(scope).to(scope.where('"documents"."name" LIKE ?', '%test%'))
       end
     end
+
+    context 'when column is different from filter_key' do
+      let(:filters) { { user_name: 'John Doe' } }
+
+      context 'with exact match' do
+        it do
+          expect { filters_class.filter_by :user_name, column: :full_name }
+            .to change { filter_instance.apply(scope) }
+            .from(scope).to(scope.where(full_name: 'John Doe'))
+        end
+      end
+
+      context 'with like match' do
+        let(:filters) { { user_name: 'John' } }
+
+        it do
+          expect { filters_class.filter_by :user_name, match: :like, column: :full_name }
+            .to change { filter_instance.apply(scope) }
+            .from(scope).to(scope.where('"documents"."full_name" LIKE ?', '%John%'))
+        end
+      end
+
+      context 'with table qualification and different column' do
+        let(:scope) { Document.joins(:tags) }
+        let(:filters) { { tag_identifier: 'ruby' } }
+
+        it do
+          expect { filters_class.filter_by :tag_identifier, table: :tags, column: :name }
+            .to change { filter_instance.apply(scope) }
+            .from(scope).to(scope.where(tags: { name: 'ruby' }))
+        end
+      end
+
+      context 'with like match, table qualification and different column' do
+        let(:scope) { Document.joins(:tags) }
+        let(:filters) { { tag_identifier: 'rub' } }
+
+        it do
+          expect { filters_class.filter_by :tag_identifier, match: :like, table: :tags, column: :name }
+            .to change { filter_instance.apply(scope) }
+            .from(scope).to(scope.where('"tags"."name" LIKE ?', '%rub%'))
+        end
+      end
+    end
   end
 end
