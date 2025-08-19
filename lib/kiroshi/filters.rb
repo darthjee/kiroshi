@@ -47,7 +47,7 @@ module Kiroshi
     #   @option options [Symbol] :match (:exact) the matching type
     #     - +:exact+ for exact matching (default)
     #     - +:like+ for partial matching using SQL LIKE with wildcards
-    #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the attribute
+    #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the column
     #     when dealing with joined tables that have conflicting column names
     #   @option options [Symbol, nil] :column (nil) the column name to use in database queries,
     #     defaults to filter_key if not specified
@@ -112,7 +112,7 @@ module Kiroshi
     # Creates a new Filters instance
     #
     # @param filters [Hash] a hash containing the filter values to be applied.
-    #   Keys should correspond to attributes defined with {.filter_by}.
+    #   Keys should correspond to filter keys defined with {.filter_by}.
     #   Values will be used for filtering. Nil or blank values are ignored.
     #
     # @example Creating filters with values
@@ -167,8 +167,8 @@ module Kiroshi
     #
     # @since 0.2.0
     def apply(scope)
-      filters.compact.each do |attribute, value|
-        filter = self.class.filter_for(attribute)
+      filters.compact.each do |filter_key, value|
+        filter = self.class.filter_for(filter_key)
         next unless filter
 
         scope = filter.apply(scope: scope, value: value)

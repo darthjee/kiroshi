@@ -42,7 +42,7 @@ module Kiroshi
     # @!method table_name
     #   @api private
     #
-    #   Returns the table name to qualify the attribute
+    #   Returns the table name to qualify the column
     #
     #   @return [String, String, nil] the table name or nil if not specified
 
@@ -50,7 +50,7 @@ module Kiroshi
     #
     # @param filter_key [Symbol] the filter key name to identify this filter
     # @param match [Symbol] the matching type, defaults to :exact
-    # @param table [String, Symbol, nil] the table name to qualify the attribute, defaults to nil
+    # @param table [String, Symbol, nil] the table name to qualify the column, defaults to nil
     # @param column [Symbol] the column name to use in database queries, defaults to filter_key
     # @option match [Symbol] :exact performs exact matching (default)
     # @option match [Symbol] :like performs partial matching using SQL LIKE
@@ -85,18 +85,6 @@ module Kiroshi
     # @since 0.3.0
     def column
       @column ||= filter_key
-    end
-
-    # Returns the column name to use in database queries
-    #
-    # This method provides backward compatibility by delegating to the column method.
-    # The column name is used by the filter query classes to build the WHERE clauses.
-    #
-    # @return [Symbol] the column name to use in database queries
-    #
-    # @since 0.3.0
-    def attribute
-      column
     end
 
     # Applies the filter to the given scope

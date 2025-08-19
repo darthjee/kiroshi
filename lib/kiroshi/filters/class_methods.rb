@@ -44,7 +44,7 @@ module Kiroshi
       #   @option options [Symbol] :match (:exact) the matching type
       #     - +:exact+ for exact matching (default)
       #     - +:like+ for partial matching using SQL LIKE with wildcards
-      #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the attribute
+      #   @option options [String, Symbol, nil] :table (nil) the table name to qualify the column
       #     when dealing with joined tables that have conflicting column names
       #   @option options [Symbol, nil] :column (nil) the column name to use in database queries,
       #     defaults to filter_key if not specified
@@ -119,7 +119,7 @@ module Kiroshi
       #
       # This method provides access to the internal registry of filters
       # that have been configured using {.filter_by}. The returned hash
-      # contains {Filter} instances keyed by their attribute names, allowing
+      # contains {Filter} instances keyed by their filter key names, allowing
       # for efficient O(1) lookup during filter application.
       #
       # This method is primarily used internally by {Filters#apply} to
@@ -128,7 +128,7 @@ module Kiroshi
       # and testing purposes.
       #
       # @return [Hash<String, Filter>] hash of {Filter} instances configured
-      #   for this filter class, keyed by attribute name for efficient access
+      #   for this filter class, keyed by filter key name for efficient access
       #
       # @example Accessing configured filters for introspection
       #   class MyFilters < Kiroshi::Filters
