@@ -13,7 +13,7 @@ module Kiroshi
     # @example Applying exact match query
     #   query = Kiroshi::FilterQuery::Exact.new(filter_runner)
     #   query.apply
-    #       #   # Generates: WHERE table_name.column = value
+    #   # Generates: WHERE table_name.column = value
     #
     # @since 0.1.1
     class Exact < FilterQuery
