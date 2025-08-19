@@ -32,10 +32,7 @@ module Kiroshi
       #
       # @since 0.1.1
       def apply
-        scope.where(
-          sql_query,
-          "%#{value}%"
-        )
+        scope.where(sql_query, "%#{value}%")
       end
 
       private
