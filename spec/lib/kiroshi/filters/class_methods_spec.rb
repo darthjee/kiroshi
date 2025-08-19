@@ -52,7 +52,7 @@ RSpec.describe Kiroshi::Filters::ClassMethods, type: :model do
       it do
         expect { filters_class.filter_by :name, match: :like, table: :documents }
           .to change { filter_instance.apply(scope) }
-          .from(scope).to(scope.where('documents.name LIKE ?', '%test%'))
+          .from(scope).to(scope.where('"documents"."name" LIKE ?', '%test%'))
       end
     end
   end

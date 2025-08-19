@@ -279,7 +279,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
 
         it 'generates SQL with table-qualified LIKE operation' do
           result = filter_instance.apply(scope)
-          expect(result.to_sql).to include('documents.name LIKE')
+          expect(result.to_sql).to include('"documents"."name" LIKE')
         end
 
         it 'generates SQL with correct LIKE pattern' do
@@ -336,7 +336,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
         end
 
         it 'generates SQL with LIKE operation on the specified column' do
-          expect(filter_instance.apply(scope).to_sql).to include('tags.name LIKE')
+          expect(filter_instance.apply(scope).to_sql).to include('"tags"."name" LIKE')
         end
 
         it 'generates SQL with correct LIKE pattern' do
