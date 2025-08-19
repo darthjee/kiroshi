@@ -23,14 +23,14 @@ module Kiroshi
   #
   # @since 0.1.0
   class Filter
-    attr_reader :attribute, :match, :table_name
+    attr_reader :filter_key, :match, :table_name
 
-    # @!method attribute
+    # @!method filter_key
     #   @api private
     #
-    #   Returns the attribute name to filter by
+    #   Returns the filter key name to identify this filter
     #
-    #   @return [Symbol] the attribute name to filter by
+    #   @return [Symbol] the filter key name to identify this filter
 
     # @!method match
     #   @api private
@@ -48,7 +48,7 @@ module Kiroshi
 
     # Creates a new Filter instance
     #
-    # @param attribute [Symbol] the attribute name to filter by
+    # @param filter_key [Symbol] the filter key name to identify this filter
     # @param match [Symbol] the matching type, defaults to :exact
     # @param table [String, Symbol, nil] the table name to qualify the attribute, defaults to nil
     # @option match [Symbol] :exact performs exact matching (default)
@@ -64,10 +64,22 @@ module Kiroshi
     #   filter = Kiroshi::Filter.new(:name, table: 'documents')
     #
     # @since 0.1.0
-    def initialize(attribute, match: :exact, table: nil)
-      @attribute = attribute
+    def initialize(filter_key, match: :exact, table: nil)
+      @filter_key = filter_key
       @match = match
       @table_name = table
+    end
+
+    # Returns the column name to use in database queries
+    #
+    # Currently returns the same value as filter_key for backward compatibility.
+    # In the future, this will be configurable via a separate column parameter.
+    #
+    # @return [Symbol] the column name to use in database queries
+    #
+    # @since 0.3.0
+    def attribute
+      filter_key
     end
 
     # Applies the filter to the given scope

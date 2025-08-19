@@ -40,9 +40,9 @@ module Kiroshi
 
     extend ClassMethods
 
-    # @method self.filter_by(attribute, **options)
+    # @method self.filter_by(filter_key, **options)
     #   @api public
-    #   @param attribute [Symbol] the attribute name to filter by
+    #   @param filter_key [Symbol] the filter key name to identify this filter
     #   @param options [Hash] additional options passed to {Filter#initialize}
     #   @option options [Symbol] :match (:exact) the matching type
     #     - +:exact+ for exact matching (default)
