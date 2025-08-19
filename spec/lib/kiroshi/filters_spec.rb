@@ -223,7 +223,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
 
         before do
           filters_class.filter_by :name, table: :tags
-          
+
           document.tags << [ruby_tag]
           other_document.tags << [js_tag]
         end
@@ -237,14 +237,15 @@ RSpec.describe Kiroshi::Filters, type: :model do
         end
 
         it 'generates SQL that filters by tags.name, not documents.name' do
-          result = filter_instance.apply(scope)
-          expect(result.to_sql).to include('"tags"."name"')
-          expect(result.to_sql).not_to include('"documents"."name"')
+          expect(filter_instance.apply(scope).to_sql).to include('"tags"."name"')
+        end
+
+        it 'generates SQL that does not include documents.name' do
+          expect(filter_instance.apply(scope).to_sql).not_to include('"documents"."name"')
         end
 
         it 'generates SQL that includes the tag filter value' do
-          result = filter_instance.apply(scope)
-          expect(result.to_sql).to include("'ruby'")
+          expect(filter_instance.apply(scope).to_sql).to include("'ruby'")
         end
       end
     end
