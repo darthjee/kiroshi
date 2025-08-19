@@ -153,7 +153,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
     end
 
-    xcontext 'when filter was defined in the superclass' do
+    context 'when filter was defined in the superclass' do
       subject(:filters_class) { Class.new(parent_class) }
 
       let(:parent_class) { Class.new(described_class) }
