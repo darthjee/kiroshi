@@ -49,11 +49,11 @@ module Kiroshi
       #
       # @example Generated SQL fragment
       #   sql_query # => '    # Constructs the parameterized SQL query string for column matching
-    #
-    # @return [String] The SQL query string with placeholders
-    # @example
-    #   sql_query
-    #   # Returns: '"table_name"."column" LIKE ?''
+      #
+      # @return [String] The SQL query string with placeholders
+      # @example
+      #   sql_query
+      #   # Returns: '"table_name"."column" LIKE ?''
       #
       # @since 0.3.0
       def sql_query
