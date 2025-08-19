@@ -289,6 +289,80 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
     end
 
+    context 'when specifying a different column' do
+      let(:scope)   { Document.joins(:tags) }
+      let(:filters) { { tag_name: 'ruby' } }
+
+      let!(:ruby_tag) { Tag.find_or_create_by(name: 'ruby') }
+      let!(:js_tag)   { Tag.find_or_create_by(name: 'javascript') }
+
+      before do
+        filters_class.filter_by :tag_name, table: :tags, column: :name
+
+        document.tags << [ruby_tag]
+        other_document.tags << [js_tag]
+      end
+
+      it 'filters by the specified column name instead of filter key' do
+        expect(filter_instance.apply(scope)).to include(document)
+      end
+
+      it 'does not return documents not matching the column filter' do
+        expect(filter_instance.apply(scope)).not_to include(other_document)
+      end
+
+      it 'generates SQL that filters by tags.name using the column parameter' do
+        expect(filter_instance.apply(scope).to_sql).to include('"tags"."name"')
+      end
+
+      it 'generates SQL that includes the filter value' do
+        expect(filter_instance.apply(scope).to_sql).to include("'ruby'")
+      end
+
+      it 'does not use the filter key name in the SQL' do
+        # The filter key is :tag_name but column is :name, so SQL should use 'name' not 'tag_name'
+        expect(filter_instance.apply(scope).to_sql).not_to include('tag_name')
+      end
+
+      context 'with LIKE matching' do
+        let(:filters) { { tag_name: 'rub' } }
+
+        before do
+          filters_class.filter_by :tag_name, table: :tags, column: :name, match: :like
+        end
+
+        it 'applies LIKE matching to the specified column' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'generates SQL with LIKE operation on the specified column' do
+          expect(filter_instance.apply(scope).to_sql).to include('tags.name LIKE')
+        end
+
+        it 'generates SQL with correct LIKE pattern' do
+          expect(filter_instance.apply(scope).to_sql).to include("'%rub%'")
+        end
+      end
+
+      context 'with different filter key and column names' do
+        let(:filters) { { user_full_name: 'test' } }
+
+        before do
+          filters_class.filter_by :user_full_name, column: :name, match: :like
+        end
+
+        it 'uses the column name in database queries' do
+          result = filter_instance.apply(Document.all)
+          expect(result.to_sql).to include('"documents"."name"')
+        end
+
+        it 'does not use the filter key in SQL' do
+          result = filter_instance.apply(Document.all)
+          expect(result.to_sql).not_to include('user_full_name')
+        end
+      end
+    end
+
     context 'when filter was defined in the superclass' do
       subject(:filters_class) { Class.new(parent_class) }
 
