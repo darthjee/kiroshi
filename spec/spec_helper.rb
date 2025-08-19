@@ -11,6 +11,7 @@ SimpleCov.start 'gem'
 require 'kiroshi'
 require 'pry-nav'
 require 'active_support/all'
+require 'action_controller/metal/strong_parameters'
 require 'factory_bot'
 
 require 'active_record'

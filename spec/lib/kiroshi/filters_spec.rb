@@ -147,6 +147,88 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
     end
 
+    context 'when filters is an instance of ActionController::Parameters' do
+      before do
+        filters_class.filter_by :name, match: :like
+        filters_class.filter_by :status
+      end
+
+      context 'with permitted parameters' do
+        let(:filters) do
+          ActionController::Parameters.new(
+            name: 'test',
+            status: 'finished',
+            unauthorized_param: 'ignored'
+          )
+        end
+
+        it 'returns documents matching the permitted parameters' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents not matching the permitted parameters' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+
+        it 'generates SQL with LIKE operation for ActionController::Parameters' do
+          expect(filter_instance.apply(scope).to_sql).to include('LIKE')
+        end
+
+        it 'generates SQL with exact match for status parameter' do
+          expect(filter_instance.apply(scope).to_sql).to include("'finished'")
+        end
+      end
+
+      context 'with unpermitted parameters' do
+        let(:filters) do
+          ActionController::Parameters.new(
+            name: 'test',
+            status: 'finished'
+          )
+        end
+
+        it 'works with unpermitted parameters' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents not matching the parameters' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+      end
+
+      context 'with string keys in ActionController::Parameters' do
+        let(:filters) do
+          ActionController::Parameters.new(
+            'name' => 'test',
+            'status' => 'finished'
+          )
+        end
+
+        it 'returns documents matching the string key parameters' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents not matching the string key parameters' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+
+        it 'treats ActionController::Parameters with string keys same as regular hash' do
+          ac_params_result = filter_instance.apply(scope)
+          hash_result = filters_class.new({ 'name' => 'test', 'status' => 'finished' }).apply(scope)
+
+          expect(ac_params_result.to_sql).to eq(hash_result.to_sql)
+        end
+      end
+
+      context 'with empty ActionController::Parameters' do
+        let(:filters) { ActionController::Parameters.new({}) }
+
+        it 'returns the original scope unchanged' do
+          expect(filter_instance.apply(scope)).to eq(scope)
+        end
+      end
+    end
+
     context 'when scope has joined tables with clashing fields' do
       let(:scope)   { Document.joins(:tags) }
       let(:filters) { { name: 'test_name' } }
