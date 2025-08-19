@@ -69,6 +69,7 @@ Kiroshi supports two types of matching:
 
 <details>
 <summary>Specifying filter types</summary>
+
 ```ruby
 class UserFilters < Kiroshi::Filters
   filter_by :email, match: :like      # Partial matching
