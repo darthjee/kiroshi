@@ -267,5 +267,50 @@ RSpec.describe Kiroshi::FilterQuery::Like, type: :model do
         end
       end
     end
+
+    context 'when Filter#column is different from filter_key' do
+      let(:filter) { Kiroshi::Filter.new(:user_name, match: :like, column: :full_name) }
+      let(:filter_value) { 'John' }
+
+      let!(:matching_document) { create(:document, full_name: 'John Doe') }
+      let!(:another_match) { create(:document, full_name: 'Johnny Smith') }
+      let!(:non_matching_document) { create(:document, full_name: 'Jane Wilson') }
+
+      let(:expected_sql) do
+        <<~SQL.squish
+          SELECT "documents".* FROM "documents" WHERE ("documents"."full_name" LIKE '%John%')
+        SQL
+      end
+
+      it 'uses the column name instead of filter_key in SQL' do
+        expect(query.apply.to_sql).to eq(expected_sql)
+      end
+
+      it 'returns records that partially match the column value' do
+        expect(query.apply).to include(matching_document)
+      end
+
+      it 'returns multiple records that contain the column value' do
+        expect(query.apply).to include(another_match)
+      end
+
+      it 'does not return records that do not contain the column value' do
+        expect(query.apply).not_to include(non_matching_document)
+      end
+
+      context 'with table qualification' do
+        let(:filter) { Kiroshi::Filter.new(:user_name, match: :like, table: :documents, column: :full_name) }
+
+        let(:expected_sql) do
+          <<~SQL.squish
+            SELECT "documents".* FROM "documents" WHERE ("documents"."full_name" LIKE '%John%')
+          SQL
+        end
+
+        it 'generates SQL with proper table and column qualification' do
+          expect(query.apply.to_sql).to eq(expected_sql)
+        end
+      end
+    end
   end
 end
