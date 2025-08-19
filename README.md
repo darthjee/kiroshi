@@ -243,5 +243,3 @@ This feature is particularly useful when:
 ## API Reference
 
 Kiroshi provides a simple, clean API focused on the `Kiroshi::Filters` class. Individual filters are handled internally and don't require direct interaction in most use cases.
-
-For detailed API documentation, see the [YARD documentation](https://www.rubydoc.info/gems/kiroshi/0.3.0).
