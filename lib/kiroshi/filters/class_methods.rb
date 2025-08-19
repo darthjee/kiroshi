@@ -85,10 +85,33 @@ module Kiroshi
       #
       # @since 0.2.0
       def filter_for(attribute)
-        filter_configs[attribute]
+        filter_configs[attribute] || inherited_filter_for(attribute)
+      end
+
+      private
+
+      # @api private
+      # @private
+      #
+      # Searches for a filter in the inheritance chain
+      #
+      # This method looks up the inheritance chain to find a filter configuration
+      # for the given attribute. It only searches in superclasses that inherit
+      # from Kiroshi::Filters, stopping when it reaches a non-Filters class.
+      #
+      # @param attribute [Symbol] the attribute name to look up
+      # @return [Filter, nil] the filter instance from a parent class, or nil if not found
+      #
+      # @since 0.2.0
+      def inherited_filter_for(attribute)
+        return nil unless superclass < Kiroshi::Filters
+
+        superclass.filter_for(attribute)
       end
 
       # @api private
+      # @private
+      #
       # Returns the hash of configured filters for this filter class
       #
       # This method provides access to the internal registry of filters

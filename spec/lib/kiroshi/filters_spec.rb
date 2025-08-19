@@ -153,7 +153,7 @@ RSpec.describe Kiroshi::Filters, type: :model do
       end
     end
 
-    xcontext 'when filter was defined in the superclass' do
+    context 'when filter was defined in the superclass' do
       subject(:filters_class) { Class.new(parent_class) }
 
       let(:parent_class) { Class.new(described_class) }
@@ -211,6 +211,41 @@ RSpec.describe Kiroshi::Filters, type: :model do
         it 'generates SQL that includes LIKE operation with the filter value' do
           expect(filter_instance.apply(scope).to_sql)
             .to include("'%test%'")
+        end
+      end
+
+      context 'when child class overrides parent filter with table qualification' do
+        let(:scope)   { Document.joins(:tags) }
+        let(:filters) { { name: 'ruby' } }
+
+        let!(:ruby_tag) { Tag.find_or_create_by(name: 'ruby') }
+        let!(:js_tag)   { Tag.find_or_create_by(name: 'javascript') }
+
+        before do
+          filters_class.filter_by :name, table: :tags
+
+          document.tags << [ruby_tag]
+          other_document.tags << [js_tag]
+        end
+
+        it 'uses the child class table qualification (tags.name)' do
+          expect(filter_instance.apply(scope)).to include(document)
+        end
+
+        it 'does not return documents with different tag names' do
+          expect(filter_instance.apply(scope)).not_to include(other_document)
+        end
+
+        it 'generates SQL that filters by tags.name, not documents.name' do
+          expect(filter_instance.apply(scope).to_sql).to include('"tags"."name"')
+        end
+
+        it 'generates SQL that does not include documents.name' do
+          expect(filter_instance.apply(scope).to_sql).not_to include('"documents"."name"')
+        end
+
+        it 'generates SQL that includes the tag filter value' do
+          expect(filter_instance.apply(scope).to_sql).to include("'ruby'")
         end
       end
     end
