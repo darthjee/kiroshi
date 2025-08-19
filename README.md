@@ -202,6 +202,44 @@ result = filters.apply(scope)
 
 The `table` parameter accepts both symbols and strings, and helps resolve column name ambiguity in complex joined queries.
 
+##### Custom Column Mapping
+
+Sometimes you may want to use a different filter key name from the database column name. The `column` parameter allows you to specify which database column to query while keeping a descriptive filter key:
+
+```ruby
+class UserFilters < Kiroshi::Filters
+  filter_by :full_name, column: :name, match: :like      # Filter key 'full_name' queries 'name' column
+  filter_by :user_email, column: :email, match: :like    # Filter key 'user_email' queries 'email' column  
+  filter_by :account_status, column: :status             # Filter key 'account_status' queries 'status' column
+end
+
+filters = UserFilters.new(full_name: 'John', user_email: 'admin', account_status: 'active')
+result = filters.apply(User.all)
+# Generates: WHERE name LIKE '%John%' AND email LIKE '%admin%' AND status = 'active'
+```
+
+###### Column Mapping with Table Qualification
+
+You can combine `column` and `table` parameters for complex scenarios:
+
+```ruby
+class DocumentFilters < Kiroshi::Filters
+  filter_by :author_name, column: :name, table: :users, match: :like  # Filter key 'author_name' queries 'users.name'
+  filter_by :doc_title, column: :title, table: :documents, match: :like  # Filter key 'doc_title' queries 'documents.title'
+  filter_by :tag_label, column: :name, table: :tags, match: :like     # Filter key 'tag_label' queries 'tags.name'
+end
+
+scope = Document.joins(:user, :tags)
+filters = DocumentFilters.new(author_name: 'John', doc_title: 'Ruby', tag_label: 'tutorial')
+result = filters.apply(scope)
+# Generates: WHERE users.name LIKE '%John%' AND documents.title LIKE '%Ruby%' AND tags.name LIKE '%tutorial%'
+```
+
+This feature is particularly useful when:
+- Creating more descriptive filter parameter names for APIs
+- Avoiding naming conflicts between filter keys and existing method names
+- Building user-friendly filter interfaces with intuitive parameter names
+
 ## API Reference
 
 Kiroshi provides a simple, clean API focused on the `Kiroshi::Filters` class. Individual filters are handled internally and don't require direct interaction in most use cases.
