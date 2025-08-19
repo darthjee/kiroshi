@@ -1,0 +1,18 @@
+---
+engines:
+  markdownlint:
+    enabled: true
+    exclude_paths:
+      - 'spec/**/*'
+      - 'coverage/**/*'
+    configurations:
+      MD033:
+        allowed_elements:
+          - details
+          - summary
+      MD041: false  # Allow HTML in headers
+exclude_paths:
+  - 'spec/**/*'
+  - 'coverage/**/*'
+  - 'pkg/**/*'
+  - 'vendor/**/*'
